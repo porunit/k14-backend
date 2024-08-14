@@ -74,6 +74,43 @@ export class AppController {
   constructor(private readonly appService: AppService) {
   }
 
+  @Get('colors')
+  async getColors(){
+    if (!this._browser) {
+      this._browser = await createBrowser();
+    }
+
+    if (!this._page) {
+      this._page = await createPage(this._browser);
+    }
+
+    await this._page.goto("https://suchen.mobile.de/fahrzeuge/detailsuche/", { waitUntil: "networkidle2" });
+
+    const htmlContent = await this._page.content();
+    const $ = cheerio.load(htmlContent);
+
+    return $('[data-testid^="exterior-color-"]').map((i, el) => el.attribs['value']).get();
+  }
+
+  @Get('brands')
+  async getBrands(){
+    if (!this._browser) {
+      this._browser = await createBrowser();
+    }
+
+    if (!this._page) {
+      this._page = await createPage(this._browser);
+    }
+
+    await this._page.goto("https://www.mobile.de", { waitUntil: "networkidle2" });
+
+    const htmlContent = await this._page.content();
+    const $ = cheerio.load(htmlContent);
+
+    const OPTION_SELECTOR = '[data-testid="qs-select-make"] option';
+    return  $(OPTION_SELECTOR).map((i, el) => ({value: $(el).attr('value'), label: $(el).text()})).get().filter(r => !!r.value);
+  }
+
   @Get()
   async getHello(
     @Query() query) {
@@ -93,8 +130,6 @@ export class AppController {
     // qs-select-make
     // https://www.mobile.de/
 
-    const OPTION_SELECTOR = '[data-testid="qs-select-make"] option';
-
     if (!this._browser) {
       this._browser = await createBrowser();
     }
@@ -105,10 +140,7 @@ export class AppController {
 
     const fromTo = (from: string, to: string) => from && to ? `${from}%3A${yearTo}` : from ? `${from}%253A` : to ? `%253A${to}` : "";
 
-    await this._page.goto("https://www.mobile.de", { waitUntil: "networkidle2" });
-    const htmlContent = await this._page.content();
-    const $ = cheerio.load(htmlContent);
-    const optionElements = $(OPTION_SELECTOR).map((i, el) => ({value: $(el).attr('value'), label: $(el).text()})).get().filter(r => !!r.value);
+    const optionElements = await this.getBrands();
 
     const selectedBrand = optionElements.find(r => r.label === brand);
 
