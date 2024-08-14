@@ -163,7 +163,7 @@ export class AppController {
     return this._brands;
   }
 
-  @Get()
+  @Get('/cars')
   async getHello(@Query() query) {
     const {
       yearFrom,
