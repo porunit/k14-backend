@@ -110,6 +110,17 @@ export class AppController {
     response.data.pipe(res);
   }
 
+  @Get("/nest-alor-client-frontend/assets/:path")
+  async getCSS(@Param("path") path: string, @Res() res: Response) {
+    const response = await axios.get(
+      `https://maksim-zakharov.github.io/mobile-de-frontend/assets/${path}`,
+      {
+        responseType: "stream",
+      },
+    );
+    response.data.pipe(res);
+  }
+
   @Get('colors')
   async getColors() {
     if (!this._browser) {
