@@ -218,59 +218,59 @@ export class AppController {
             ? `%253A${to}`
             : '';
 
-    const optionElements = await this.getBrands();
-
-    const selectedBrand = optionElements.find((r) => r.label === brand);
-
-    if (!selectedBrand) {
-      return {
-        error: {
-          message: 'Выберите бренд авто',
-          details: optionElements.map((r) => ({
-            ...r,
-            url: `http://localhost:3001/?${[...Object.entries(query), ['brand', r.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
-          })),
-        },
-      };
-    }
-
-    const modelsResult = await this._page.evaluate((selectedBrand) => {
-      return fetch(
-        `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand.value}`,
-      ).then((res) => res.json());
-    }, selectedBrand);
-
-    const modelsNameValueMap = new Map(
-      modelsResult.data.filter((r) => !!r.value).map((i) => [i.label, i.value]),
-    );
-    const selectedModel = modelsNameValueMap.get(model);
-    if (!selectedModel) {
-      return {
-        error: {
-          message: 'Выберите модель авто',
-          details: modelsResult.data.map((r) => {
-            const queryWithoutModel = Object.entries(query).filter(
-              ([key]) => key !== 'model',
-            );
-
-            if (!r.items) {
-              return {
-                ...r,
-                url: `http://localhost:3001/?${[...queryWithoutModel, ['model', r.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
-              };
-            } else {
-              return {
-                ...r,
-                items: r.items.map((rr) => ({
-                  ...rr,
-                  url: `http://localhost:3001/?${[...queryWithoutModel, ['model', rr.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
-                })),
-              };
-            }
-          }),
-        },
-      };
-    }
+    // const optionElements = await this.getBrands();
+    //
+    // const selectedBrand = optionElements.find((r) => r.label === brand);
+    //
+    // if (!selectedBrand) {
+    //   return {
+    //     error: {
+    //       message: 'Выберите бренд авто',
+    //       details: optionElements.map((r) => ({
+    //         ...r,
+    //         url: `http://localhost:3001/?${[...Object.entries(query), ['brand', r.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
+    //       })),
+    //     },
+    //   };
+    // }
+    //
+    // const modelsResult = await this._page.evaluate((selectedBrand) => {
+    //   return fetch(
+    //     `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand.value}`,
+    //   ).then((res) => res.json());
+    // }, selectedBrand);
+    //
+    // const modelsNameValueMap = new Map(
+    //   modelsResult.data.filter((r) => !!r.value).map((i) => [i.label, i.value]),
+    // );
+    // const selectedModel = modelsNameValueMap.get(model);
+    // if (!selectedModel) {
+    //   return {
+    //     error: {
+    //       message: 'Выберите модель авто',
+    //       details: modelsResult.data.map((r) => {
+    //         const queryWithoutModel = Object.entries(query).filter(
+    //           ([key]) => key !== 'model',
+    //         );
+    //
+    //         if (!r.items) {
+    //           return {
+    //             ...r,
+    //             url: `http://localhost:3001/?${[...queryWithoutModel, ['model', r.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
+    //           };
+    //         } else {
+    //           return {
+    //             ...r,
+    //             items: r.items.map((rr) => ({
+    //               ...rr,
+    //               url: `http://localhost:3001/?${[...queryWithoutModel, ['model', rr.label]].map(([k, v]) => `${k}=${v}`).join('&')}`,
+    //             })),
+    //           };
+    //         }
+    //       }),
+    //     },
+    //   };
+    // }
 
     const queryParamsMap = {
       dam: 'false',
@@ -279,7 +279,7 @@ export class AppController {
       sb: 'rel',
       vc: 'Car',
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: `${selectedBrand.value}%253B${selectedModel}%253B%253B`,
+      ms: `${brand}%253B${model}%253B%253B`,
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: 'true',
       pageNumber: page,
