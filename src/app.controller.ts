@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Res } from "@nestjs/common";
 import { AppService } from './app.service';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
+import axios from "axios";
 
 async function createBrowser() {
   return puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -84,6 +85,30 @@ export class AppController {
   private _brands;
 
   constructor(private readonly appService: AppService) {}
+
+
+
+  @Get("/")
+  async getStatic(@Res() res: Response) {
+    const response = await axios.get(
+      "https://maksim-zakharov.github.io/mobile-de-frontend/",
+      {
+        responseType: "stream",
+      },
+    );
+    response.data.pipe(res);
+  }
+
+  @Get("/mobile-de-frontend/:path")
+  async getAsset(@Param("path") path: string, @Res() res: Response) {
+    const response = await axios.get(
+      `https://maksim-zakharov.github.io/mobile-de-frontend/${path}`,
+      {
+        responseType: "stream",
+      },
+    );
+    response.data.pipe(res);
+  }
 
   @Get('colors')
   async getColors() {
