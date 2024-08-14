@@ -4,7 +4,7 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
 
 async function createBrowser() {
-  return puppeteer.launch({ headless: true });
+  return puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
 }
 
 async function createPage(browser: Browser) {
