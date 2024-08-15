@@ -92,7 +92,7 @@ async function extractTextContent(page) {
 @Controller()
 export class AppController {
   private _browser: Browser;
-  private _page: Page;
+  private _pageMap = {};
 
   private _brands;
 
@@ -138,23 +138,25 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  async preparePage(){
+  async preparePage(name: string): Promise<Page> {
     if (!this._browser) {
       this._browser = await createBrowser();
     }
 
-    if (!this._page) {
-      this._page = await createPage(this._browser);
+    if (!this._pageMap[name]) {
+      this._pageMap[name] = await createPage(this._browser);
     }
+
+    return this._pageMap[name];
   }
 
   @Get('/api/colors')
   async getColors() {
-    await this.preparePage();
+    const page = await this.preparePage('main');
 
-    await goto(this._page,'https://suchen.mobile.de/fahrzeuge/detailsuche/');
+    await goto(page,'https://suchen.mobile.de/fahrzeuge/detailsuche/');
 
-    const { $ } = await getCheerio(this._page);
+    const { $ } = await getCheerio(page);
 
     return $('[data-testid^="exterior-color-"]')
       .map((i, el) => el.attribs['value'])
@@ -167,11 +169,11 @@ export class AppController {
       return this._brands;
     }
 
-    await this.preparePage();
+    const page = await this.preparePage('main');
 
-    await goto(this._page,'https://www.mobile.de');
+    await goto(page,'https://www.mobile.de');
 
-    const { $ } = await getCheerio(this._page);
+    const { $ } = await getCheerio(page);
 
     const OPTION_SELECTOR = '[data-testid="qs-select-make"] option';
 
@@ -194,11 +196,11 @@ export class AppController {
       brand?: string;
     } = query;
 
-    await this.preparePage();
+    const page = await this.preparePage('main');
 
-    await goto(this._page,'https://www.mobile.de');
+    await goto(page,'https://www.mobile.de');
 
-    const modelsResult = await this._page.evaluate((selectedBrand) => {
+    const modelsResult = await page.evaluate((selectedBrand) => {
       return fetch(
         `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand}`,
       ).then((res) => res.json());
@@ -231,7 +233,7 @@ export class AppController {
       model?: string;
     } = query;
 
-    await this.preparePage();
+    const browserPage = await this.preparePage('cars');
 
     const fromTo = (from: string, to: string) =>
       from && to
@@ -321,10 +323,10 @@ export class AppController {
 
     const URL = decodeURI(url);
 
-    await goto(this._page, URL);
+    await goto(browserPage, URL);
 
-    await this._page.waitForSelector('[data-testid="result-list-container"]');
+    await browserPage.waitForSelector('[data-testid="result-list-container"]');
 
-    return extractTextContent(this._page).then((r) => ({ ...r, URL }));
+    return extractTextContent(browserPage).then((r) => ({ ...r, URL }));
   }
 }
