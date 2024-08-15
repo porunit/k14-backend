@@ -98,38 +98,39 @@ export class AppController {
 
   constructor(private readonly appService: AppService) {}
 
-
-
   @Get("/")
-  async getStatic(@Res() res: Response) {
+  async getStatic(@Res() res) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/`,
       {
         responseType: "stream",
       },
     );
+    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
   @Get(`/:path`)
-  async getAsset(@Param("path") path: string, @Res() res: Response) {
+  async getAsset(@Param("path") path: string, @Res() res) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/${path}`,
       {
         responseType: "stream",
       },
     );
+    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
   @Get(`/assets/:path`)
-  async getCSS(@Param("path") path: string, @Res() res: Response) {
+  async getCSS(@Param("path") path: string, @Res() res) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/assets/${path}`,
       {
         responseType: "stream",
       },
     );
+    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
