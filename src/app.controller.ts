@@ -148,7 +148,7 @@ export class AppController {
     }
   }
 
-  @Get('colors')
+  @Get('/api/colors')
   async getColors() {
     await this.preparePage();
 
@@ -161,7 +161,7 @@ export class AppController {
       .get();
   }
 
-  @Get('brands')
+  @Get('/api/brands')
   async getBrands() {
     if(this._brands){
       return this._brands;
@@ -183,7 +183,7 @@ export class AppController {
     return this._brands;
   }
 
-  @Get('/cars')
+  @Get('/api/cars')
   async getHello(@Query() query) {
     const {
       yearFrom,
