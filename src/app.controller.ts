@@ -106,7 +106,7 @@ export class AppController {
         responseType: "stream",
       },
     );
-    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
+    // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
