@@ -227,17 +227,6 @@ export class AppController {
       brand,
     }:
       any
-    //   {
-    //   page?: string;
-    //   brand?: string;
-    //   yearFrom?: string;
-    //   yearTo?: string;
-    //   priceFrom?: string;
-    //   priceTo?: string;
-    //   mileageFrom?: string;
-    //   mileageTo?: string;
-    //   model?: string;
-    // }
     = query;
 
     const browserPage = await this.preparePage('cars');
