@@ -23,30 +23,7 @@ const webAppUrl = "https://maksim-zakharov.github.io/mobile-de-frontend";
           const prompt = ctx.update.message.text;
 
           if (prompt === "/start") {
-            ctx.reply("Ниже появится кнопка, заполните форму", {
-              reply_markup: {
-                keyboard: [
-                  [{ text: "Сделать заказ", web_app: { url: webAppUrl } }]
-                ]
-              }
-            });
-          }
-        });
-
-        // await bot.telegram
-        //   // .setMyCommands([
-        //   //   {
-        //   //     command: "/create_image",
-        //   //     description: "Создать картинку"
-        //   //   }
-        //   // ])
-        //   .then(() => console.log("Команды установлены"))
-        //   .catch((e) =>
-        //     console.log(
-        //       "Не удалось установить команды для телеграмм",
-        //       e.message
-        //     )
-        //   );
+            ctx.reply("Нажмите на кнопку Open App");
 
         bot
           .launch()
