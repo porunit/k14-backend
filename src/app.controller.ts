@@ -196,6 +196,10 @@ export class AppController {
       brand?: string;
     } = query;
 
+    if(!brand){
+      return [];
+    }
+
     const page = await this.preparePage('main');
 
     await goto(page,'https://www.mobile.de');
