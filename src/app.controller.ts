@@ -187,9 +187,7 @@ export class AppController {
 
   @Get('/api/models')
   async getModels(@Query() query) {
-    if(this._brands){
-      return this._brands;
-    }
+
     const {
       brand,
     }: {
