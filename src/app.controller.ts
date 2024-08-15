@@ -30,6 +30,8 @@ const getCheerio = async (page: Page) => {
 const goto = (page: Page, url: string) =>
   page.goto(url, { waitUntil: 'networkidle2' });
 
+const EUR_RUB =  100;
+
 async function extractTextContent(page) {
   const { $ } = await getCheerio(page);
 
@@ -79,7 +81,7 @@ async function extractTextContent(page) {
         date,
         mileage: parseInt(mileage.split(' ')[0].replace('.', '')),
         title: titleText,
-        price: parseInt(priceText.split(' ')[0].replace('.', '')),
+        price: parseInt(priceText.split(' ')[0].replace('.', '')) * EUR_RUB,
         imgUrls,
         detailsText,
       };
@@ -209,7 +211,7 @@ export class AppController {
 
   @Get('/api/cars')
   async getHello(@Query() query) {
-    const {
+    let {
       yearFrom,
       yearTo,
       priceFrom,
@@ -219,17 +221,20 @@ export class AppController {
       page,
       model,
       brand,
-    }: {
-      page?: string;
-      brand?: string;
-      yearFrom?: string;
-      yearTo?: string;
-      priceFrom?: string;
-      priceTo?: string;
-      mileageFrom?: string;
-      mileageTo?: string;
-      model?: string;
-    } = query;
+    }:
+      any
+    //   {
+    //   page?: string;
+    //   brand?: string;
+    //   yearFrom?: string;
+    //   yearTo?: string;
+    //   priceFrom?: string;
+    //   priceTo?: string;
+    //   mileageFrom?: string;
+    //   mileageTo?: string;
+    //   model?: string;
+    // }
+    = query;
 
     const browserPage = await this.preparePage('cars');
 
@@ -295,6 +300,9 @@ export class AppController {
     //     },
     //   };
     // }
+
+    if(priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
+    if(priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
 
     const queryParamsMap = {
       dam: 'false',
