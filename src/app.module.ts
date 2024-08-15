@@ -4,8 +4,6 @@ import { AppService } from "./app.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { Telegraf } from "telegraf";
 
-const webAppUrl = "https://maksim-zakharov.github.io/mobile-de-frontend";
-
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [AppController],
