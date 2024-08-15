@@ -118,7 +118,8 @@ export class AppController {
         responseType: "stream",
       },
     );
-    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
+    // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
+    res.set("content-type", response.headers["content-type"])
     response.data.pipe(res);
   }
 
@@ -130,7 +131,10 @@ export class AppController {
         responseType: "stream",
       },
     );
-    Object.entries(response.headers).map(([key, header]) => res.set(key, header));
+
+    res.set("content-type", response.headers["content-type"])
+
+    // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
