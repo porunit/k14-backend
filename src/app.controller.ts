@@ -111,7 +111,7 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  @Get(`/${FRONTEND_NAME}/:path`)
+  @Get(`/:path`)
   async getAsset(@Param("path") path: string, @Res() res: Response) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/${path}`,
@@ -122,7 +122,7 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  @Get(`/${FRONTEND_NAME}/assets/:path`)
+  @Get(`/assets/:path`)
   async getCSS(@Param("path") path: string, @Res() res: Response) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/assets/${path}`,
