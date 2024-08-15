@@ -4,12 +4,16 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
 import axios from "axios";
 
+const ORIGIN = "https://maksim-zakharov.github.io"
+const FRONTEND_NAME = "mobile-de-frontend";
+
 async function createBrowser() {
   return puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
 }
 
 async function createPage(browser: Browser) {
   const page = await browser.newPage();
+
   await page.setUserAgent(
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36',
   );
@@ -17,9 +21,17 @@ async function createPage(browser: Browser) {
   return page;
 }
 
+const getCheerio = async (page: Page) => {
+  const content = await page.content();
+  const $ = cheerio.load(content);
+  return {content, $};
+}
+
+const goto = (page: Page, url: string) =>
+  page.goto(url, { waitUntil: 'networkidle2' });
+
 async function extractTextContent(page) {
-  const htmlContent = await page.content();
-  const $ = cheerio.load(htmlContent);
+  const { $ } = await getCheerio(page);
 
   const LIST_ITEMS_SELECTOR =
     '[data-testid="result-list-container"] a[data-testid^="result-listing-"]';
@@ -91,7 +103,7 @@ export class AppController {
   @Get("/")
   async getStatic(@Res() res: Response) {
     const response = await axios.get(
-      "https://maksim-zakharov.github.io/mobile-de-frontend/",
+      `${ORIGIN}/${FRONTEND_NAME}/`,
       {
         responseType: "stream",
       },
@@ -99,10 +111,10 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  @Get("/mobile-de-frontend/:path")
+  @Get(`/${FRONTEND_NAME}/:path`)
   async getAsset(@Param("path") path: string, @Res() res: Response) {
     const response = await axios.get(
-      `https://maksim-zakharov.github.io/mobile-de-frontend/${path}`,
+      `${ORIGIN}/${FRONTEND_NAME}/${path}`,
       {
         responseType: "stream",
       },
@@ -110,10 +122,10 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  @Get("/mobile-de-frontend/assets/:path")
+  @Get(`/${FRONTEND_NAME}/assets/:path`)
   async getCSS(@Param("path") path: string, @Res() res: Response) {
     const response = await axios.get(
-      `https://maksim-zakharov.github.io/mobile-de-frontend/assets/${path}`,
+      `${ORIGIN}/${FRONTEND_NAME}/assets/${path}`,
       {
         responseType: "stream",
       },
@@ -121,8 +133,7 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  @Get('colors')
-  async getColors() {
+  async preparePage(){
     if (!this._browser) {
       this._browser = await createBrowser();
     }
@@ -130,13 +141,15 @@ export class AppController {
     if (!this._page) {
       this._page = await createPage(this._browser);
     }
+  }
 
-    await this._page.goto('https://suchen.mobile.de/fahrzeuge/detailsuche/', {
-      waitUntil: 'networkidle2',
-    });
+  @Get('colors')
+  async getColors() {
+    await this.preparePage();
 
-    const htmlContent = await this._page.content();
-    const $ = cheerio.load(htmlContent);
+    await goto(this._page,'https://suchen.mobile.de/fahrzeuge/detailsuche/');
+
+    const { $ } = await getCheerio(this._page);
 
     return $('[data-testid^="exterior-color-"]')
       .map((i, el) => el.attribs['value'])
@@ -149,20 +162,11 @@ export class AppController {
       return this._brands;
     }
 
-    if (!this._browser) {
-      this._browser = await createBrowser();
-    }
+    await this.preparePage();
 
-    if (!this._page) {
-      this._page = await createPage(this._browser);
-    }
+    await goto(this._page,'https://www.mobile.de');
 
-    await this._page.goto('https://www.mobile.de', {
-      waitUntil: 'networkidle2',
-    });
-
-    const htmlContent = await this._page.content();
-    const $ = cheerio.load(htmlContent);
+    const { $ } = await getCheerio(this._page);
 
     const OPTION_SELECTOR = '[data-testid="qs-select-make"] option';
 
@@ -198,16 +202,7 @@ export class AppController {
       model?: string;
     } = query;
 
-    // qs-select-make
-    // https://www.mobile.de/
-
-    if (!this._browser) {
-      this._browser = await createBrowser();
-    }
-
-    if (!this._page) {
-      this._page = await createPage(this._browser);
-    }
+    await this.preparePage();
 
     const fromTo = (from: string, to: string) =>
       from && to
@@ -297,7 +292,7 @@ export class AppController {
 
     const URL = decodeURI(url);
 
-    await this._page.goto(URL, { waitUntil: 'networkidle2' });
+    await goto(this._page, URL);
 
     await this._page.waitForSelector('[data-testid="result-list-container"]');
 
