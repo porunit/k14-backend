@@ -183,6 +183,30 @@ export class AppController {
     return this._brands;
   }
 
+  @Get('/api/models')
+  async getModels(@Query() query) {
+    if(this._brands){
+      return this._brands;
+    }
+    const {
+      brand,
+    }: {
+      brand?: string;
+    } = query;
+
+    await this.preparePage();
+
+    await goto(this._page,'https://www.mobile.de');
+
+    const modelsResult = await this._page.evaluate((selectedBrand) => {
+      return fetch(
+        `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand}`,
+      ).then((res) => res.json());
+    }, brand);
+
+    return modelsResult.data.filter((r) => !!r.value);
+  }
+
   @Get('/api/cars')
   async getHello(@Query() query) {
     const {
