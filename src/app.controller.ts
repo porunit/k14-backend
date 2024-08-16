@@ -233,7 +233,7 @@ export class AppController {
 
     const fromTo = (from: string, to: string) =>
       from && to
-        ? `${from}%3A${yearTo}`
+        ? encodeURIComponent(`${from}:${to}`)
         : from
           ? `${from}%253A`
           : to
