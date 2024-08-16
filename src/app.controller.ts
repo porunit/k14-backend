@@ -210,7 +210,7 @@ export class AppController {
       ).then((res) => res.json());
     }, brand);
 
-    return modelsResult.data.filter((r) => !!r.value);
+    return modelsResult.data; // .filter((r) => !!r.value);
   }
 
   @Get('/api/cars')
