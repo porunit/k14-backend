@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Res } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Param, Query, Res } from "@nestjs/common";
 import { AppService } from './app.service';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
@@ -92,13 +92,16 @@ async function extractTextContent(page) {
 }
 
 @Controller()
-export class AppController {
+export class AppController implements OnModuleInit{
   private _browser: Browser;
   private _pageMap = {};
 
   private _brands;
 
   constructor(private readonly appService: AppService) {
+  }
+
+  onModuleInit(): any {
     createBrowser().then((browser) => (this._browser = browser));
   }
 
