@@ -1,11 +1,11 @@
-import { Controller, Get, Param, Query, Res } from "@nestjs/common";
+import { Controller, Get, Param, Query, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as cheerio from 'cheerio';
-import axios from "axios";
+import axios from 'axios';
 
-const ORIGIN = "https://maksim-zakharov.github.io"
-const FRONTEND_NAME = "mobile-de-frontend";
+const ORIGIN = 'https://maksim-zakharov.github.io';
+const FRONTEND_NAME = 'mobile-de-frontend';
 
 async function createBrowser() {
   return puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -24,13 +24,13 @@ async function createPage(browser: Browser) {
 const getCheerio = async (page: Page) => {
   const content = await page.content();
   const $ = cheerio.load(content);
-  return {content, $};
-}
+  return { content, $ };
+};
 
 const goto = (page: Page, url: string) =>
   page.goto(url, { waitUntil: 'networkidle2' });
 
-const EUR_RUB =  100;
+const EUR_RUB = 100;
 
 async function extractTextContent(page) {
   const { $ } = await getCheerio(page);
@@ -99,44 +99,38 @@ export class AppController {
   private _brands;
 
   constructor(private readonly appService: AppService) {
-    createBrowser().then(browser => this._browser = browser)
+    createBrowser().then((browser) => (this._browser = browser));
   }
 
-  @Get("/")
+  @Get('/')
   async getStatic(@Res() res) {
-    const response = await axios.get(
-      `${ORIGIN}/${FRONTEND_NAME}/`,
-      {
-        responseType: "stream",
-      },
-    );
+    const response = await axios.get(`${ORIGIN}/${FRONTEND_NAME}/`, {
+      responseType: 'stream',
+    });
     // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
   @Get(`/:path`)
-  async getAsset(@Param("path") path: string, @Res() res) {
-    const response = await axios.get(
-      `${ORIGIN}/${FRONTEND_NAME}/${path}`,
-      {
-        responseType: "stream",
-      },
-    );
+  async getAsset(@Param('path') path: string, @Res() res) {
+    const response = await axios.get(`${ORIGIN}/${FRONTEND_NAME}/${path}`, {
+      responseType: 'stream',
+    });
     // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
-    res.set("content-type", response.headers["content-type"])
+    res.set('content-type', response.headers['content-type']);
     response.data.pipe(res);
   }
 
   @Get(`/assets/:path`)
-  async getCSS(@Param("path") path: string, @Res() res) {
+  async getCSS(@Param('path') path: string, @Res() res) {
     const response = await axios.get(
       `${ORIGIN}/${FRONTEND_NAME}/assets/${path}`,
       {
-        responseType: "stream",
+        responseType: 'stream',
       },
     );
 
-    res.set("content-type", response.headers["content-type"])
+    res.set('content-type', response.headers['content-type']);
 
     // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
@@ -148,7 +142,7 @@ export class AppController {
     }
 
     let key = name;
-    if(userId){
+    if (userId) {
       key = `${name}-${userId}`;
     }
 
@@ -163,7 +157,7 @@ export class AppController {
   async getColors() {
     const page = await this.preparePage('main');
 
-    await goto(page,'https://suchen.mobile.de/fahrzeuge/detailsuche/');
+    await goto(page, 'https://suchen.mobile.de/fahrzeuge/detailsuche/');
 
     const { $ } = await getCheerio(page);
 
@@ -174,13 +168,13 @@ export class AppController {
 
   @Get('/api/brands')
   async getBrands() {
-    if(this._brands){
+    if (this._brands) {
       return this._brands;
     }
 
     const page = await this.preparePage('main');
 
-    await goto(page,'https://www.mobile.de');
+    await goto(page, 'https://www.mobile.de');
 
     const { $ } = await getCheerio(page);
 
@@ -190,26 +184,25 @@ export class AppController {
       .map((i, el) => ({ value: $(el).attr('value'), label: $(el).text() }))
       .get()
       .filter((r) => !!r.value);
-      
+
     return this._brands;
   }
 
   @Get('/api/models')
   async getModels(@Query() query) {
-
     const {
       brand,
     }: {
       brand?: string;
     } = query;
 
-    if(!brand){
+    if (!brand) {
       return [];
     }
 
     const page = await this.preparePage('main');
 
-    await goto(page,'https://www.mobile.de');
+    await goto(page, 'https://www.mobile.de');
 
     const modelsResult = await page.evaluate((selectedBrand) => {
       return fetch(
@@ -234,10 +227,8 @@ export class AppController {
       brand,
       sort,
       order, // asc / desc
-      userId
-    }:
-      any
-    = query;
+      userId,
+    }: any = query;
 
     const browserPage = await this.preparePage('cars', userId);
 
@@ -304,8 +295,8 @@ export class AppController {
     //   };
     // }
 
-    if(priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
-    if(priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
+    if (priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
+    if (priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
 
     const queryParamsMap = {
       dam: 'false',
@@ -314,7 +305,7 @@ export class AppController {
       // По какому полю сортировать
       sb: sort || 'rel',
       // Сортировка в какую сторону - up / down
-      od: order ? order === 'asc' ? 'up' : 'down' : '',
+      od: order ? (order === 'asc' ? 'up' : 'down') : '',
       vc: 'Car',
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
       ms: `${brand}%253B${model}%253B%253B`,
