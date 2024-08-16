@@ -102,7 +102,7 @@ export class AppController implements OnModuleInit{
   }
 
   onModuleInit(): any {
-    createBrowser().then((browser) => (this._browser = browser));
+    // createBrowser().then((browser) => (this._browser = browser));
   }
 
   @Get('/')
