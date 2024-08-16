@@ -225,6 +225,8 @@ export class AppController {
       page,
       model,
       brand,
+      sort,
+      order // asc / desc
     }:
       any
     = query;
@@ -301,7 +303,10 @@ export class AppController {
       dam: 'false',
       ref: 'quickSearch',
       s: 'Car',
-      sb: 'rel',
+      // По какому полю сортировать
+      sb: sort || 'rel',
+      // Сортировка в какую сторону - up / down
+      od: order ? order === 'asc' ? 'up' : 'down' : '',
       vc: 'Car',
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
       ms: `${brand}%253B${model}%253B%253B`,
