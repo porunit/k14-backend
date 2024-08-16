@@ -98,7 +98,9 @@ export class AppController {
 
   private _brands;
 
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService) {
+    createBrowser().then(browser => this._browser = browser)
+  }
 
   @Get("/")
   async getStatic(@Res() res) {
@@ -140,16 +142,21 @@ export class AppController {
     response.data.pipe(res);
   }
 
-  async preparePage(name: string): Promise<Page> {
+  async preparePage(name: string, userId?: string): Promise<Page> {
     if (!this._browser) {
       this._browser = await createBrowser();
     }
 
-    if (!this._pageMap[name]) {
-      this._pageMap[name] = await createPage(this._browser);
+    let key = name;
+    if(userId){
+      key = `${name}-${userId}`;
     }
 
-    return this._pageMap[name];
+    if (!this._pageMap[key]) {
+      this._pageMap[key] = await createPage(this._browser);
+    }
+
+    return this._pageMap[key];
   }
 
   @Get('/api/colors')
@@ -226,12 +233,13 @@ export class AppController {
       model,
       brand,
       sort,
-      order // asc / desc
+      order, // asc / desc
+      userId
     }:
       any
     = query;
 
-    const browserPage = await this.preparePage('cars');
+    const browserPage = await this.preparePage('cars', userId);
 
     const fromTo = (from: string, to: string) =>
       from && to
