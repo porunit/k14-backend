@@ -37,31 +37,24 @@ async function extractTextContent(page) {
 
   const LIST_ITEMS_SELECTOR =
     '[data-testid="result-list-container"] a[data-testid^="result-listing-"]';
-  // const PAGINATION_BUTTONS_SELECTOR ="[data-testid=\"srp-pagination\"] button:not([data-testid=\"pagination:next\"])";
   const TOTAL_COUNT_SELECTOR = '[data-testid="srp-title"]';
 
-  const ITEMS_PER_PAGE = 20;
-
   const lastButtonText = $(TOTAL_COUNT_SELECTOR).text();
-  // const lastButton = $(PAGINATION_BUTTONS_SELECTOR).last();
-  // const lastButtonText = lastButton.text();
-
-  // console.log(lastButton);
-  // console.log(lastButtonText);
   const totalCount = parseInt(lastButtonText.split(' ')[0].replace('.', ''));
-  // const lastPageNumber = parseInt(lastButtonText);
-  // const totalCount = ITEMS_PER_PAGE * lastPageNumber;
   const listItemsElements = $(LIST_ITEMS_SELECTOR);
 
-  const listItems = listItemsElements
+  const items = listItemsElements
     .map((index, element) => {
       const url = $(element).attr('href');
+      const searchParams = new URLSearchParams(url.split('?')[1]);
+      const id = searchParams.get('id');
+
       const detailsElement = $(element).find(
         '[data-testid="listing-details-attributes"]',
       );
       const detailsText = detailsElement.text();
 
-      const [date, mileage, ...attrs] = detailsText.split(' • ');
+      const [date, mileage] = detailsText.split(' • ');
 
       const titleElement = $(element).find('h2');
       const titleText = titleElement.text();
@@ -77,6 +70,7 @@ async function extractTextContent(page) {
         .get();
 
       return {
+        id,
         url: `https://suchen.mobile.de${url}`,
         date,
         mileage: parseInt(mileage.split(' ')[0].replace('.', '')),
@@ -88,7 +82,7 @@ async function extractTextContent(page) {
     })
     .get();
 
-  return { items: listItems, totalCount };
+  return { items, totalCount };
 }
 
 @Controller()
@@ -216,8 +210,62 @@ export class AppController implements OnModuleInit{
     return modelsResult.data; // .filter((r) => !!r.value);
   }
 
+  // https://suchen.mobile.de/fahrzeuge/details.html?id=219709942
+  @Get('/api/cars/:id')
+  async getCarById(@Param('id') id: string, @Query() query) {
+    let {
+      userId,
+    }: any = query;
+    const browserPage = await this.preparePage('getCarById', userId);
+
+    await goto(browserPage, `https://m.mobile.de/fahrzeuge/details.html?id=${id}`);
+
+    await browserPage.waitForSelector('[data-testid="vip-key-features-box"]');
+
+    const { $ } = await getCheerio(browserPage);
+
+    const listItems = $('[data-testid^="vip-key-features-list-item-"]').get();
+
+    const features = listItems.map(el => {
+      const testId = $(el).attr('data-testid');
+      const key = testId.replace('vip-key-features-list-item-', '');
+      const [_, labelEl, valueEl] = $(el).find('div').get();
+
+      return {
+        key,
+        label: $(labelEl).text(),
+        value: $(valueEl).text(),
+      }
+    })
+
+    const technicalDataEl = $('[data-testid="vip-technical-data-box"] dl > dt').get()
+
+    const technicalData = technicalDataEl.map(el => {
+      const testId = el.attribs['data-testid'];
+      let key;
+      let label;
+      let value;
+      if(testId){
+        key = testId.split('-item')[0];
+        label = $(el).text();
+        value = $(`[data-testid="${testId}"] + dd`).text();
+      }
+
+      return {
+        key,
+        label,
+        value
+      }
+    })
+
+    return {
+      features,
+      technicalData
+    };
+  }
+
   @Get('/api/cars')
-  async getHello(@Query() query) {
+  async getCars(@Query() query) {
     let {
       yearFrom,
       yearTo,
@@ -233,7 +281,7 @@ export class AppController implements OnModuleInit{
       userId,
     }: any = query;
 
-    const browserPage = await this.preparePage('cars', userId);
+    const browserPage = await this.preparePage("cars", userId);
 
     const fromTo = (from: string, to: string) =>
       from && to
