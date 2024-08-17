@@ -68,9 +68,9 @@ async function extractTextContent(page) {
       const searchParams = new URLSearchParams(url.split("?")[1]);
       const id = searchParams.get("id");
 
-      const hasSponsoredBadge = $(element).find(
+      const hasSponsoredBadge = Boolean($(element).find(
         "[data-testid=\"sponsored-badge\"]"
-      ).get()[0];
+      ).get()[0]);
 
       const detailsElement = $(element).find(
         "[data-testid=\"listing-details-attributes\"]"
