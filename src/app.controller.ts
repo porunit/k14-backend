@@ -49,9 +49,7 @@ const getCheerio = async (page: Page) => {
 const goto = (page: Page, url: string) =>
   page.goto(url, { waitUntil: "networkidle2" });
 
-const EUR_RUB = 100;
-
-async function extractTextContent(page) {
+async function extractTextContent(page, EUR_RUB) {
   const { $ } = await getCheerio(page);
 
   const LIST_ITEMS_SELECTOR =
@@ -120,11 +118,25 @@ export class AppController implements OnModuleInit {
 
   private _brands;
 
+  private EUR_RUB = 100;
+
   constructor(private readonly appService: AppService) {
   }
 
   onModuleInit(): any {
     // createBrowser().then((browser) => (this._browser = browser));
+
+    this.getCurrencyRate({CharCode: 'EUR'}).then(val => this.EUR_RUB = val?.Value || 100);
+  }
+
+  // https://www.cbr-xml-daily.ru/daily_json.js
+
+
+  @Get("/api/currency-rate")
+  async getCurrencyRate(@Query() { CharCode }: { CharCode: string }) {
+    const response = await axios.get(`https://www.cbr-xml-daily.ru/daily_json.js`);
+
+    return response.data.Valute[CharCode];
   }
 
   @Get("/")
@@ -265,8 +277,8 @@ export class AppController implements OnModuleInit {
       userId
     }: any = query;
 
-    if (priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
-    if (priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
+    if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
+    if (priceTo) priceTo = Math.floor(parseInt(priceTo) / this.EUR_RUB);
     // Мощность
     if (pwFrom) pwFrom = Math.floor(parseInt(pwFrom) / 1.36);
     if (pwTo) pwFrom = Math.floor(parseInt(pwTo) / 1.36);
@@ -446,8 +458,8 @@ export class AppController implements OnModuleInit {
     //   };
     // }
 
-    if (priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
-    if (priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
+    if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
+    if (priceTo) priceTo = Math.floor(parseInt(priceTo) / this.EUR_RUB);
     // Мощность
     if (pwFrom) pwFrom = Math.floor(parseInt(pwFrom) / 1.36);
     if (pwTo) pwTo = Math.floor(parseInt(pwTo) / 1.36);
@@ -493,6 +505,6 @@ export class AppController implements OnModuleInit {
 
     await browserPage.waitForSelector("[data-testid=\"result-list-container\"]");
 
-    return extractTextContent(browserPage).then((r) => ({ ...r, URL, page: parseInt(page || 1) }));
+    return extractTextContent(browserPage, this.EUR_RUB).then((r) => ({ ...r, URL, page: parseInt(page || 1) }));
   }
 }
