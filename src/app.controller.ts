@@ -223,7 +223,7 @@ export class AppController implements OnModuleInit{
       return this.brandModelsMap[brand];
     }
 
-    const page = await this.preparePage('main');
+    const page = await this.preparePage('api');
 
     await goto(page, 'https://www.mobile.de');
 
@@ -277,7 +277,7 @@ export class AppController implements OnModuleInit{
       fr: fromTo(yearFrom, yearTo), // 2018%3A2020
     };
 
-    const browserPage = await this.preparePage('main');
+    const browserPage = await this.preparePage('api');
 
     await goto(browserPage, 'https://www.mobile.de');
 
