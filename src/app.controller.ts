@@ -110,6 +110,8 @@ export class AppController implements OnModuleInit{
   private _browser: Browser;
   private _pageMap = {};
 
+  private brandModelsMap = {};
+
   private _brands;
 
   constructor(private readonly appService: AppService) {
@@ -217,6 +219,10 @@ export class AppController implements OnModuleInit{
       return [];
     }
 
+    if(this.brandModelsMap[brand]){
+      return this.brandModelsMap[brand];
+    }
+
     const page = await this.preparePage('main');
 
     await goto(page, 'https://www.mobile.de');
@@ -226,6 +232,10 @@ export class AppController implements OnModuleInit{
         `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand}`,
       ).then((res) => res.json());
     }, brand);
+
+    if(modelsResult.data?.length > 0) {
+      this.brandModelsMap[brand] = modelsResult.data;
+    }
 
     return modelsResult.data; // .filter((r) => !!r.value);
   }
