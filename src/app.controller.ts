@@ -115,7 +115,6 @@ async function extractTextContent(page) {
 @Controller()
 export class AppController implements OnModuleInit {
   private _browser: Browser;
-  private _pageMap = {};
 
   private brandModelsMap = {};
 
@@ -172,11 +171,11 @@ export class AppController implements OnModuleInit {
       key = `${name}-${userId}`;
     }
 
-    if (!this._pageMap[key]) {
-      this._pageMap[key] = await createPage(this._browser);
+    if (!this.appService._pageMap[key]) {
+      this.appService._pageMap[key] = await createPage(this._browser);
     }
 
-    return this._pageMap[key];
+    return this.appService._pageMap[key];
   }
 
   @Get("/api/colors")

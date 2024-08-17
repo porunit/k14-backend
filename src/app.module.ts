@@ -11,8 +11,8 @@ import { Telegraf } from 'telegraf';
     AppService,
     {
       provide: 'Telegraf',
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      inject: [ConfigService, AppService],
+      useFactory: async (configService: ConfigService, appService: AppService) => {
         const bot = new Telegraf(configService.get<string>('TELEGRAM_TOKEN'), {
           handlerTimeout: Infinity,
         });
@@ -21,7 +21,7 @@ import { Telegraf } from 'telegraf';
           const prompt = ctx.update.message.text;
 
           if (prompt === '/start') {
-            ctx.reply('Нажмите на кнопку Open App');
+            ctx.reply(`Нажмите на кнопку Open App. Сейчас пользуются: ${Object.keys(appService._pageMap).length - 2}`);
 
             bot
               .launch()
