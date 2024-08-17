@@ -21,6 +21,26 @@ async function createPage(browser: Browser) {
   return page;
 }
 
+
+
+const fromTo = (from: string, to: string) => {
+  if(from === 'null'){
+    from = ''
+  }
+
+  if(to === 'null'){
+    to = ''
+  }
+
+  return from && to
+    ? encodeURIComponent(`${from}:${to}`)
+    : from
+      ? encodeURIComponent(`${from}:`)
+      : to
+        ? encodeURIComponent(`:${to}`)
+        : "";
+};
+
 const getCheerio = async (page: Page) => {
   const content = await page.content();
   const $ = cheerio.load(content);
@@ -210,6 +230,57 @@ export class AppController implements OnModuleInit{
     return modelsResult.data; // .filter((r) => !!r.value);
   }
 
+  @Get('/api/cars/count')
+  async getCarsCount(@Query() query) {
+    let {
+      yearFrom,
+      yearTo,
+      priceFrom,
+      priceTo,
+      mileageFrom,
+      mileageTo,
+      page,
+      model,
+      brand,
+      sort,
+      order, // asc / desc
+      userId,
+    }: any = query;
+
+    if (priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
+    if (priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
+
+    const queryParamsMap = {
+      dam: 'false',
+      ref: 'quickSearch',
+      s: 'Car',
+      // По какому полю сортировать
+      sb: sort || 'rel',
+      // Сортировка в какую сторону - up / down
+      od: order ? (order === 'asc' ? 'up' : 'down') : '',
+      vc: 'Car',
+      p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
+      ms: encodeURIComponent(`${brand};${model};;`),
+      ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
+      isSearchRequest: 'true',
+      pageNumber: page,
+      fr: fromTo(yearFrom, yearTo), // 2018%3A2020
+    };
+
+    const browserPage = await this.preparePage('main');
+
+    await goto(browserPage, 'https://www.mobile.de');
+
+    const modelsResult = await browserPage.evaluate((queryParamsMap) => {
+      const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join('&')
+      return fetch(
+        `https://m.mobile.de/consumer/api/search/hit-count?${str}`,
+      ).then((res) => res.json());
+    }, queryParamsMap);
+
+    return modelsResult;
+  }
+
   // https://suchen.mobile.de/fahrzeuge/details.html?id=219709942
   @Get('/api/cars/:id')
   async getCarById(@Param('id') id: string, @Query() query) {
@@ -258,9 +329,23 @@ export class AppController implements OnModuleInit{
       }
     })
 
+    const similarElements = $('[data-testid^="vip-similar-ads-"]').get();
+    similarElements.map(el => {
+      const name = $(el).find('h2').text();
+      const price = $(el).find('[data-testid="price-label"]').text();
+      const imgUrl = $(el).find('[data-testid="header-preview-image"]').attr('src');
+
+      return {
+        name,
+        price,
+        imgUrl
+      }
+    })
+
     return {
       features,
-      technicalData
+      technicalData,
+      similarElements
     };
   }
 
@@ -282,15 +367,6 @@ export class AppController implements OnModuleInit{
     }: any = query;
 
     const browserPage = await this.preparePage("cars", userId);
-
-    const fromTo = (from: string, to: string) =>
-      from && to
-        ? encodeURIComponent(`${from}:${to}`)
-        : from
-          ? `${from}%253A`
-          : to
-            ? `%253A${to}`
-            : '';
 
     // const optionElements = await this.getBrands();
     //
@@ -349,6 +425,14 @@ export class AppController implements OnModuleInit{
     if (priceFrom) priceFrom = parseInt(priceFrom) / EUR_RUB;
     if (priceTo) priceTo = parseInt(priceTo) / EUR_RUB;
 
+    if(brand === 'null'){
+      brand = ''
+    }
+
+    if(model === 'null'){
+      model = ''
+    }
+
     const queryParamsMap = {
       dam: 'false',
       ref: 'quickSearch',
@@ -359,7 +443,7 @@ export class AppController implements OnModuleInit{
       od: order ? (order === 'asc' ? 'up' : 'down') : '',
       vc: 'Car',
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: `${brand}%253B${model}%253B%253B`,
+      ms: encodeURIComponent(`${brand};${model};;`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: 'true',
       pageNumber: page,
