@@ -465,6 +465,6 @@ export class AppController implements OnModuleInit{
 
     await browserPage.waitForSelector('[data-testid="result-list-container"]');
 
-    return extractTextContent(browserPage).then((r) => ({ ...r, URL }));
+    return extractTextContent(browserPage).then((r) => ({ ...r, URL, page: parseInt(page || 1) }));
   }
 }
