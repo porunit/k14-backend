@@ -92,6 +92,8 @@ async function extractTextContent(page, EUR_RUB) {
         .map((i, imgElement) => imgElement.attribs["src"])
         .get();
 
+      const valutePrice = parseInt(priceText.split(" ")[0].replace(".", ""))
+
       return {
         id,
         url: `https://suchen.mobile.de${url}`,
@@ -99,7 +101,8 @@ async function extractTextContent(page, EUR_RUB) {
         power,
         mileage: parseInt(mileage.split(" ")[0].replace(".", "")),
         title: titleText,
-        price: parseInt(priceText.split(" ")[0].replace(".", "")) * EUR_RUB,
+        price:  Math.floor(valutePrice * EUR_RUB),
+        priceWithoutVAT: Math.floor(valutePrice / 1.19 * EUR_RUB),
         imgUrls,
         hasSponsoredBadge,
         detailsText
