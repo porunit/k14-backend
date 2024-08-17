@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "build:ci": "npm run build && sudo scripts/install_puppeteer_deps.sh",
+    "build:ci": "npm run build && chmod +x scripts/install_puppeteer_deps.sh && scripts/install_puppeteer_deps.sh",
     "rebuild": "export NODE_OPTIONS=--max_old_space_size=2048 && nest build",
     "re": "git pull && pm2 kill && npm run rebuild && pm2 start dist/main.js --cron-restart=\"0 */2 * * *\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
