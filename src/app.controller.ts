@@ -68,6 +68,10 @@ async function extractTextContent(page) {
       const searchParams = new URLSearchParams(url.split("?")[1]);
       const id = searchParams.get("id");
 
+      const hasSponsoredBadge = $(element).find(
+        "[data-testid=\"sponsored-badge\"]"
+      ).get()[0];
+
       const detailsElement = $(element).find(
         "[data-testid=\"listing-details-attributes\"]"
       );
@@ -99,10 +103,11 @@ async function extractTextContent(page) {
         title: titleText,
         price: parseInt(priceText.split(" ")[0].replace(".", "")) * EUR_RUB,
         imgUrls,
+        hasSponsoredBadge,
         detailsText
       };
     })
-    .get();
+    .get().filter(i => !i.hasSponsoredBadge);
 
   return { items, totalCount };
 }
