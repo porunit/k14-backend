@@ -66,7 +66,7 @@ async function extractTextContent(page, EUR_RUB) {
       const searchParams = new URLSearchParams(url.split("?")[1]);
       const id = searchParams.get("id");
 
-      const hasSponsoredBadge = Boolean($(element).find(
+      const isSponsored = Boolean($(element).find(
         "[data-testid=\"sponsored-badge\"]"
       ).get()[0]);
 
@@ -104,11 +104,11 @@ async function extractTextContent(page, EUR_RUB) {
         price:  Math.floor(valutePrice * EUR_RUB),
         priceWithoutVAT: Math.floor(valutePrice / 1.19 * EUR_RUB),
         imgUrls,
-        hasSponsoredBadge,
+        isSponsored,
         detailsText
       };
     })
-    .get().filter(i => !i.hasSponsoredBadge);
+    .get().filter(i => !i.isSponsored);
 
   return { items, totalCount };
 }
@@ -277,7 +277,8 @@ export class AppController implements OnModuleInit {
       brand,
       sort,
       order, // asc / desc
-      userId
+      userId,
+      ft
     }: any = query;
 
     if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
@@ -301,7 +302,9 @@ export class AppController implements OnModuleInit {
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: "true",
       pageNumber: page,
-      fr: fromTo(yearFrom, yearTo) // 2018%3A2020
+      fr: fromTo(yearFrom, yearTo),
+      // fuel-type Тип двигателя (массив)
+      ft: ft ? Array.isArray(ft) ? ft : [ft] : []
     };
 
     const browserPage = await this.preparePage("api");
@@ -402,7 +405,8 @@ export class AppController implements OnModuleInit {
       order, // asc / desc
       userId,
       pwFrom,
-      pwTo
+      pwTo,
+      ft
     }: any = query;
 
     const browserPage = await this.preparePage("cars", userId);
@@ -490,14 +494,26 @@ export class AppController implements OnModuleInit {
       isSearchRequest: "true",
       pageNumber: page,
       fr: fromTo(yearFrom, yearTo), // 2018%3A2020
-      pw: fromTo(pwFrom, pwTo)
+      pw: fromTo(pwFrom, pwTo),
+      // fuel-type Тип двигателя (массив)
+      ft: ft ? Array.isArray(ft) ? ft : [ft] : []
     };
 
     let url = "https://suchen.mobile.de/fahrzeuge/search.html";
 
     const searchString = Object.entries(queryParamsMap)
-      .filter(([key, value]) => !!value)
-      .map(([key, value]) => `${key}=${value}`)
+      .filter(([key, value]) => {
+        if(Array.isArray(value)){
+          return value.length > 0;
+        }
+        return !!value;
+      })
+      .map(([key, value]) => {
+        if(Array.isArray(value)){
+          return value.map(v => `${key}=${v}`).join('&')
+        }
+        return `${key}=${value}`;
+      })
       .join("&");
 
     if (searchString) url += `?${searchString}`;
