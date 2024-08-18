@@ -77,6 +77,8 @@ async function extractTextContent(page, EUR_RUB) {
 
       const [date, mileage] = detailsText.split(" • ");
 
+      const filterWords = 'Unfallfrei • ';
+
       const power = parseInt(detailsText.match(/(\d+) PS/gm)?.[0]?.split(" PS")?.[0] || "0");
 
       const titleElement = $(element).find("h2");
@@ -108,7 +110,7 @@ async function extractTextContent(page, EUR_RUB) {
         detailsText
       };
     })
-    .get().filter(i => !i.isSponsored);
+    .get().filter(i => !i.isSponsored).map(({isSponsored, ...i}) => i);
 
   return { items, totalCount };
 }
@@ -295,7 +297,9 @@ export class AppController implements OnModuleInit {
       userId,
       ft,
       c,
-      tr
+      tr,
+      // Состояние
+      con
     }: any = query;
 
     if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
@@ -331,7 +335,9 @@ export class AppController implements OnModuleInit {
       // Кузов
       c: c ? Array.isArray(c) ? c : [c] : [],
       // Коробка
-      tr: tr ? Array.isArray(tr) ? tr : [tr] : []
+      tr: tr ? Array.isArray(tr) ? tr : [tr] : [],
+      // Состояние
+      con
     };
 
     const browserPage = await this.preparePage("api");
@@ -435,7 +441,8 @@ export class AppController implements OnModuleInit {
       pwTo,
       ft,
       c,
-      tr
+      tr,
+      con
     }: any = query;
 
     const browserPage = await this.preparePage("cars", userId);
@@ -535,7 +542,9 @@ export class AppController implements OnModuleInit {
       // Кузов
       c: c ? Array.isArray(c) ? c : [c] : [],
       // Коробка
-      tr: tr ? Array.isArray(tr) ? tr : [tr] : []
+      tr: tr ? Array.isArray(tr) ? tr : [tr] : [],
+      // Состояние
+      con
     };
 
     let url = "https://suchen.mobile.de/fahrzeuge/search.html";
