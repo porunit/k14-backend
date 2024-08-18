@@ -75,9 +75,37 @@ async function extractTextContent(page, EUR_RUB) {
       );
       const detailsText = detailsElement.text();
 
-      const [date, mileage] = detailsText.split(" • ");
+      const detailsRows = detailsText.split(" • ");
+
+      const date = detailsRows[0];
+      const mileage = detailsRows[1];
+      const powerText = detailsRows[2];
 
       const filterWords = 'Unfallfrei • ';
+      let diff = 0;
+      if(detailsText.includes(filterWords)){
+        diff = 1;
+      }
+
+      const fuelTypeRu = {
+        'Benzin': 'Бензин',
+        'Hybrid (Benzin/Elektro)': 'Гибрид', // 'Гибрид (Бензин/Электро)',
+        'Hybrid (Diesel/Elektro)': 'Гибрид', // 'Гибрид (Дизель/Электро)',
+        'Diesel': 'Дизель'
+      }
+
+      const transmissionTypeRu = {
+        'Automatik': 'Автомат',
+        'Halbautomatik': 'Полуавтомат',
+        'Schaltgetriebe': 'Ручная'
+      }
+
+      const fuelType = fuelTypeRu[detailsRows[3 + diff]] || detailsRows[3 + diff];
+      const transmissionType = transmissionTypeRu[detailsRows[4 + diff]] || detailsRows[4 + diff];
+      let conditionType = detailsRows[5 + diff].split('HU ')[1];
+      if(conditionType === 'Neu'){
+        conditionType = 'Новый';
+      }
 
       const power = parseInt(detailsText.match(/(\d+) PS/gm)?.[0]?.split(" PS")?.[0] || "0");
 
@@ -107,7 +135,10 @@ async function extractTextContent(page, EUR_RUB) {
         priceWithoutVAT: Math.floor(valutePrice / 1.19 * EUR_RUB),
         imgUrls,
         isSponsored,
-        detailsText
+        detailsText,
+        fuelType,
+        transmissionType,
+        conditionType
       };
     })
     .get().filter(i => !i.isSponsored).map(({isSponsored, ...i}) => i);
