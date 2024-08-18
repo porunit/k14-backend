@@ -278,7 +278,8 @@ export class AppController implements OnModuleInit {
       sort,
       order, // asc / desc
       userId,
-      ft
+      ft,
+      c
     }: any = query;
 
     if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
@@ -304,7 +305,9 @@ export class AppController implements OnModuleInit {
       pageNumber: page,
       fr: fromTo(yearFrom, yearTo),
       // fuel-type Тип двигателя (массив)
-      ft: ft ? Array.isArray(ft) ? ft : [ft] : []
+      ft: ft ? Array.isArray(ft) ? ft : [ft] : [],
+      // Кузов
+      c: c ? Array.isArray(c) ? c : [c] : []
     };
 
     const browserPage = await this.preparePage("api");
