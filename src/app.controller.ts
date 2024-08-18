@@ -279,7 +279,8 @@ export class AppController implements OnModuleInit {
       order, // asc / desc
       userId,
       ft,
-      c
+      c,
+      tr
     }: any = query;
 
     if (priceFrom) priceFrom = Math.floor(parseInt(priceFrom) / this.EUR_RUB);
@@ -307,7 +308,9 @@ export class AppController implements OnModuleInit {
       // fuel-type Тип двигателя (массив)
       ft: ft ? Array.isArray(ft) ? ft : [ft] : [],
       // Кузов
-      c: c ? Array.isArray(c) ? c : [c] : []
+      c: c ? Array.isArray(c) ? c : [c] : [],
+      // Коробка
+      tr: tr ? Array.isArray(tr) ? tr : [tr] : []
     };
 
     const browserPage = await this.preparePage("api");
@@ -409,7 +412,9 @@ export class AppController implements OnModuleInit {
       userId,
       pwFrom,
       pwTo,
-      ft
+      ft,
+      c,
+      tr
     }: any = query;
 
     const browserPage = await this.preparePage("cars", userId);
@@ -499,7 +504,11 @@ export class AppController implements OnModuleInit {
       fr: fromTo(yearFrom, yearTo), // 2018%3A2020
       pw: fromTo(pwFrom, pwTo),
       // fuel-type Тип двигателя (массив)
-      ft: ft ? Array.isArray(ft) ? ft : [ft] : []
+      ft: ft ? Array.isArray(ft) ? ft : [ft] : [],
+      // Кузов
+      c: c ? Array.isArray(c) ? c : [c] : [],
+      // Коробка
+      tr: tr ? Array.isArray(tr) ? tr : [tr] : []
     };
 
     let url = "https://suchen.mobile.de/fahrzeuge/search.html";
