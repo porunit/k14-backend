@@ -254,6 +254,21 @@ export class AppController implements OnModuleInit {
       ).then((res) => res.json());
     }, brand);
 
+    const rus = (val: any) => {
+     let label = val.label || '';
+
+     label = label.replace('Klasse', 'Класс');
+      label = label.replace('Alle', 'Все');
+      label = label.replace('Andere', 'Другие');
+
+     return {
+       ...val,
+       label
+     }
+    }
+
+    modelsResult.data = modelsResult.data.map(i => i.items ? ({...i, items: i.items.map(rus)}) : rus(i));
+
     if (modelsResult.data?.length > 0) {
       this.brandModelsMap[brand] = modelsResult.data;
     }
