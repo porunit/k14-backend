@@ -289,6 +289,12 @@ export class AppController implements OnModuleInit {
     if (pwFrom) pwFrom = Math.floor(parseInt(pwFrom) / 1.36);
     if (pwTo) pwFrom = Math.floor(parseInt(pwTo) / 1.36);
 
+    let modelGroup = '';
+    if(model?.startsWith('group')){
+      modelGroup = model.split('group_')[1];
+      model = '';
+    }
+
     const queryParamsMap = {
       dam: "false",
       ref: "quickSearch",
@@ -300,7 +306,7 @@ export class AppController implements OnModuleInit {
       vc: "Car",
       pw: fromTo(pwFrom, pwTo),
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: encodeURIComponent(`${brand};${model};;`),
+      ms: encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: "true",
       pageNumber: page,
@@ -487,6 +493,12 @@ export class AppController implements OnModuleInit {
       model = "";
     }
 
+    let modelGroup = '';
+    if(model?.startsWith('group')){
+      modelGroup = model.split('group_')[1];
+      model = '';
+    }
+
     const queryParamsMap = {
       dam: "false",
       ref: "quickSearch",
@@ -497,7 +509,7 @@ export class AppController implements OnModuleInit {
       od: order ? (order === "asc" ? "up" : "down") : "",
       vc: "Car",
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: encodeURIComponent(`${brand};${model};;`),
+      ms: encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: "true",
       pageNumber: page,
