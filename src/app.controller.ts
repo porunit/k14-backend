@@ -257,8 +257,8 @@ export class AppController implements OnModuleInit {
     const rus = (val: any) => {
      let label = val.label || '';
 
-     label = label.replace('Klasse', 'Класс');
-      label = label.replace('Alle', 'Все');
+     label = label.replace(/(Klasse|Class)/gm, 'Класс');
+      label = label.replace(/(Alle|All)/gm, 'Все');
       label = label.replace('Andere', 'Другие');
 
      return {
