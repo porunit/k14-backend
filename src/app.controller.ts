@@ -581,9 +581,10 @@ export class AppController implements OnModuleInit {
       model = "";
     }
 
+    // https://www.mobile.de/api/s/?ps=0&top&tic&psz=20&vc=Car&dam=0&con=NEW&ref=dsp&sb=rel&_filters
     const queryParamsMap = {
-      dam: "false",
-      ref: "quickSearch",
+      dam: 0, // "false",
+      ref:"dsp", // "quickSearch",
       s: "Car",
       // По какому полю сортировать
       sb: sort || "rel",
@@ -594,7 +595,8 @@ export class AppController implements OnModuleInit {
       ms: encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       isSearchRequest: "true",
-      pageNumber: page,
+      ps: (parseInt(page || 1) - 1) * 20, // pageNumber: page,
+      psz: 20,
       fr: fromTo(yearFrom, yearTo), // 2018%3A2020
       pw: fromTo(pwFrom, pwTo),
       // fuel-type Тип двигателя (массив)
