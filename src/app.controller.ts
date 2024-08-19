@@ -12,7 +12,7 @@ async function createBrowser() {
     headless: true,
     args: [
       // "--enable-features=NetworkService",
-      "--no-sandbox",
+      "--no-sandbox"
       // "--disable-setuid-sandbox",
       // "--disable-dev-shm-usage",
       // "--disable-accelerated-2d-canvas",
@@ -468,80 +468,18 @@ export class AppController implements OnModuleInit {
 
   // https://suchen.mobile.de/fahrzeuge/details.html?id=219709942
   @Get("/api/cars/:id")
-  async getCarById(@Param("id") id: string, @Query() query) {
-    let {
-      userId
-    }: any = query;
-    const browserPage = await this.preparePage("getCarById", userId);
+  async getCarById(@Param("id") id: string) {
+    const headers = {};
+    headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
+    headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
+    headers["x-mobile-device-type"] = "phone";
 
-    await goto(browserPage, `https://suchen.mobile.de/fahrzeuge/details.html?id=${id}`);
-
-    await browserPage.waitForSelector('[data-testid=\"vip-key-features-box\"]');
-
-    const { $ } = await getCheerio(browserPage);
-
-    const listItems = $("[data-testid^=\"vip-key-features-list-item-\"]").get();
-
-    const element = $("[data-testid=\"image-gallery\"]");
-
-    const imgElements = $(element).find(
-      "[data-testid^=\"slide-container-image-\"] img"
-    );
-    const imgUrls = imgElements
-      .map((i, imgElement) => imgElement.attribs["src"])
-      .get();
-
-    const features = listItems.map(el => {
-      const testId = $(el).attr("data-testid");
-      const key = testId.replace("vip-key-features-list-item-", "");
-      const [_, labelEl, valueEl] = $(el).find("div").get();
-
-      return {
-        key,
-        label: $(labelEl).text(),
-        value: $(valueEl).text()
-      };
-    });
-
-    const technicalDataEl = $("[data-testid=\"vip-technical-data-box\"] dl > dt").get();
-
-    const technicalData = technicalDataEl.map(el => {
-      const testId = el.attribs["data-testid"];
-      let key;
-      let label;
-      let value;
-      if (testId) {
-        key = testId.split("-item")[0];
-        label = $(el).text();
-        value = $(`[data-testid="${testId}"] + dd`).text();
+    return axios.get(
+      `https://www.mobile.de/api/a/${id}`,
+      {
+        headers
       }
-
-      return {
-        key,
-        label,
-        value
-      };
-    });
-
-    const similarElements = $("[data-testid^=\"vip-similar-ads-\"]").get();
-    similarElements.map(el => {
-      const name = $(el).find("h2").text();
-      const price = $(el).find("[data-testid=\"price-label\"]").text();
-      const imgUrl = $(el).find("[data-testid=\"header-preview-image\"]").attr("src");
-
-      return {
-        name,
-        price,
-        imgUrl
-      };
-    });
-
-    return {
-      imgUrls,
-      features,
-      technicalData,
-      similarElements
-    };
+    ).then((res) => res.data);
   }
 
   @Get("/api/cars")
@@ -669,7 +607,7 @@ export class AppController implements OnModuleInit {
       con
     };
 
-    let url = "https://suchen.mobile.de/fahrzeuge/search.html";
+    let url = "https://www.mobile.de/api/s/";
 
     const searchString = Object.entries(queryParamsMap)
       .filter(([key, value]) => {
@@ -688,12 +626,45 @@ export class AppController implements OnModuleInit {
 
     if (searchString) url += `?${searchString}`;
 
-    const URL = decodeURI(url);
+    const headers = {};
+    headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
+    headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
+    headers["x-mobile-device-type"] = "phone";
 
-    await goto(browserPage, URL);
 
-    await browserPage.waitForSelector("[data-testid=\"result-list-container\"]");
+    const fuelTypeRu = {
+      "Benzin": "Бензин",
+      "Hybrid (Benzin/Elektro)": "Гибрид", // 'Гибрид (Бензин/Электро)',
+      "Hybrid (Diesel/Elektro)": "Гибрид", // 'Гибрид (Дизель/Электро)',
+      "Diesel": "Дизель"
+    };
 
-    return extractTextContent(browserPage, this.EUR_RUB).then((r) => ({ ...r, URL, page: parseInt(page || 1) }));
+
+    const transmissionTypeRu = {
+      "Automatik": "Автомат",
+      "Halbautomatik": "Полуавтомат",
+      "Schaltgetriebe": "Ручная"
+    };
+
+    return axios.get(
+      url,
+      {
+        headers
+      }
+    ).then((res) => res.data)
+      .then(r => ({
+        ...r,
+        items: r.items.map(i => ({
+          ...i,
+          imgUrls: i.images.map(im => `https://${im.uri.replace('m.mobile.de/yams-proxy/','')}?rule=mo-360.jpg`),
+          date: i.attr.fr,
+          price: i.price.grs.amount * this.EUR_RUB,
+          priceWithoutVAT: i.price.grs.amount * this.EUR_RUB / 1.19,
+          fuelType: fuelTypeRu[i.attr.ft] || i.attr.ft,
+          transmissionType: transmissionTypeRu[i.attr.tr] || i.attr.tr,
+          mileage: parseInt(i.attr.ml.replace(".", "")),
+          power: parseInt(i.attr.pw.match(/(\d+) PS/gm)?.[0]?.split(" PS")?.[0] || "0")
+        }))
+      }));
   }
 }
