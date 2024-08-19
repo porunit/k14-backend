@@ -241,7 +241,7 @@ export class AppController implements OnModuleInit {
   }
 
   onModuleInit(): any {
-    // createBrowser().then((browser) => (this._browser = browser));
+    createBrowser().then((browser) => (this._browser = browser));
 
     this.getCurrencyRate({ CharCode: "EUR" }).then(val => this.EUR_RUB = val?.Value || 100);
   }
