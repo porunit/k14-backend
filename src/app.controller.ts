@@ -8,7 +8,18 @@ const ORIGIN = "https://maksim-zakharov.github.io";
 const FRONTEND_NAME = "mobile-de-frontend";
 
 async function createBrowser() {
-  return puppeteer.launch({ headless: true, args: ["--no-sandbox"] });
+  return puppeteer.launch({
+    headless: true,
+    args: [
+      "--enable-features=NetworkService",
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+      "--disable-accelerated-2d-canvas",
+      "--disable-gpu",
+      "--window-size=1920x1080"
+    ]
+  });
 }
 
 async function createPage(browser: Browser) {
@@ -18,6 +29,76 @@ async function createPage(browser: Browser) {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
   );
 
+  await page.setViewport({
+    width: 1920,
+    height: 1080
+  });
+
+  const withoutAssets = true;
+
+  if (withoutAssets) {
+    const blockedResourceTypes = [
+      "image",
+      "media",
+      "font",
+      "texttrack",
+      "object",
+      "beacon",
+      "csp_report",
+      "imageset"
+    ];
+
+    const skippedResources = [
+      "quantserve",
+      "adzerk",
+      "doubleclick",
+      "adition",
+      "exelator",
+      "sharethrough",
+      "cdn.api.twitter",
+      "google-analytics",
+      "googletagmanager",
+      // 'google', // Нужно для рекапчи гугла, без этого не работает кнопка логина
+      "fontawesome",
+      "facebook",
+      "analytics",
+      "optimizely",
+      "clicktale",
+      "mixpanel",
+      "zedo",
+      "clicksor",
+      "mc.yandex.ru",
+      ".mail.ru",
+      "tiqcdn",
+      "https://www.upwork.com/upi/psmetrics",
+      ".px-cloud.net",
+      "https://bcdn-logs.upwork.com",
+      "https://p.tvpixel.com",
+      "www.googletagmanager.com",
+      "www.redditstatic.com"
+    ];
+    try {
+      await page.setRequestInterception(true);
+      page.on("request", request => {
+        const requestUrl = request.url().split("?")[0].split("#")[0];
+        if (
+          blockedResourceTypes.indexOf(request.resourceType()) !== -1 ||
+          skippedResources.some(resource => requestUrl.indexOf(resource) !== -1)
+          // Be careful with above
+          || request.url().includes(".jpg")
+          || request.url().includes(".jpeg")
+          || request.url().includes(".png")
+          || request.url().includes(".gif")
+          || request.url().includes(".css")
+        )
+          request.abort();
+        else
+          request.continue();
+      });
+    } catch (e) {
+
+    }
+  }
   return page;
 }
 
@@ -81,30 +162,30 @@ async function extractTextContent(page, EUR_RUB) {
       const mileage = detailsRows[1];
       const powerText = detailsRows[2];
 
-      const filterWords = 'Unfallfrei • ';
+      const filterWords = "Unfallfrei • ";
       let diff = 0;
-      if(detailsText.includes(filterWords)){
+      if (detailsText.includes(filterWords)) {
         diff = 1;
       }
 
       const fuelTypeRu = {
-        'Benzin': 'Бензин',
-        'Hybrid (Benzin/Elektro)': 'Гибрид', // 'Гибрид (Бензин/Электро)',
-        'Hybrid (Diesel/Elektro)': 'Гибрид', // 'Гибрид (Дизель/Электро)',
-        'Diesel': 'Дизель'
-      }
+        "Benzin": "Бензин",
+        "Hybrid (Benzin/Elektro)": "Гибрид", // 'Гибрид (Бензин/Электро)',
+        "Hybrid (Diesel/Elektro)": "Гибрид", // 'Гибрид (Дизель/Электро)',
+        "Diesel": "Дизель"
+      };
 
       const transmissionTypeRu = {
-        'Automatik': 'Автомат',
-        'Halbautomatik': 'Полуавтомат',
-        'Schaltgetriebe': 'Ручная'
-      }
+        "Automatik": "Автомат",
+        "Halbautomatik": "Полуавтомат",
+        "Schaltgetriebe": "Ручная"
+      };
 
       const fuelType = fuelTypeRu[detailsRows[3 + diff]] || detailsRows[3 + diff];
       const transmissionType = transmissionTypeRu[detailsRows[4 + diff]] || detailsRows[4 + diff];
-      let conditionType = detailsRows[5 + diff].split('HU ')[1];
-      if(conditionType === 'Neu'){
-        conditionType = 'Новый';
+      let conditionType = detailsRows[5 + diff]?.split("HU ")[1];
+      if (conditionType === "Neu") {
+        conditionType = "Новый";
       }
 
       const power = parseInt(detailsText.match(/(\d+) PS/gm)?.[0]?.split(" PS")?.[0] || "0");
@@ -122,7 +203,7 @@ async function extractTextContent(page, EUR_RUB) {
         .map((i, imgElement) => imgElement.attribs["src"])
         .get();
 
-      const valutePrice = parseInt(priceText.split(" ")[0].replace(".", ""))
+      const valutePrice = parseInt(priceText.split(" ")[0].replace(".", ""));
 
       return {
         id,
@@ -131,7 +212,7 @@ async function extractTextContent(page, EUR_RUB) {
         power,
         mileage: parseInt(mileage.split(" ")[0].replace(".", "")),
         title: titleText,
-        price:  Math.floor(valutePrice * EUR_RUB),
+        price: Math.floor(valutePrice * EUR_RUB),
         priceWithoutVAT: Math.floor(valutePrice / 1.19 * EUR_RUB),
         imgUrls,
         isSponsored,
@@ -141,7 +222,7 @@ async function extractTextContent(page, EUR_RUB) {
         conditionType
       };
     })
-    .get().filter(i => !i.isSponsored).map(({isSponsored, ...i}) => i);
+    .get().filter(i => !i.isSponsored).map(({ isSponsored, ...i }) => i);
 
   return { items, totalCount };
 }
@@ -162,7 +243,7 @@ export class AppController implements OnModuleInit {
   onModuleInit(): any {
     // createBrowser().then((browser) => (this._browser = browser));
 
-    this.getCurrencyRate({CharCode: 'EUR'}).then(val => this.EUR_RUB = val?.Value || 100);
+    this.getCurrencyRate({ CharCode: "EUR" }).then(val => this.EUR_RUB = val?.Value || 100);
   }
 
   // https://www.cbr-xml-daily.ru/daily_json.js
@@ -288,19 +369,19 @@ export class AppController implements OnModuleInit {
     }, brand);
 
     const rus = (val: any) => {
-     let label = val.label || '';
+      let label = val.label || "";
 
-     label = label.replace(/(Klasse|Class)/gm, 'Класс');
-      label = label.replace(/(Alle|All)/gm, 'Все');
-      label = label.replace('Andere', 'Другие');
+      label = label.replace(/(Klasse|Class)/gm, "Класс");
+      label = label.replace(/(Alle|All)/gm, "Все");
+      label = label.replace("Andere", "Другие");
 
-     return {
-       ...val,
-       label
-     }
-    }
+      return {
+        ...val,
+        label
+      };
+    };
 
-    modelsResult.data = modelsResult.data.map(i => i.items ? ({...i, items: i.items.map(rus)}) : rus(i));
+    modelsResult.data = modelsResult.data.map(i => i.items ? ({ ...i, items: i.items.map(rus) }) : rus(i));
 
     if (modelsResult.data?.length > 0) {
       this.brandModelsMap[brand] = modelsResult.data;
@@ -339,10 +420,10 @@ export class AppController implements OnModuleInit {
     if (pwFrom) pwFrom = Math.floor(parseInt(pwFrom) / 1.36);
     if (pwTo) pwFrom = Math.floor(parseInt(pwTo) / 1.36);
 
-    let modelGroup = '';
-    if(model?.startsWith('group')){
-      modelGroup = model.split('group_')[1];
-      model = '';
+    let modelGroup = "";
+    if (model?.startsWith("group")) {
+      modelGroup = model.split("group_")[1];
+      model = "";
     }
 
     const queryParamsMap = {
@@ -546,10 +627,10 @@ export class AppController implements OnModuleInit {
       model = "";
     }
 
-    let modelGroup = '';
-    if(model?.startsWith('group')){
-      modelGroup = model.split('group_')[1];
-      model = '';
+    let modelGroup = "";
+    if (model?.startsWith("group")) {
+      modelGroup = model.split("group_")[1];
+      model = "";
     }
 
     const queryParamsMap = {
@@ -582,14 +663,14 @@ export class AppController implements OnModuleInit {
 
     const searchString = Object.entries(queryParamsMap)
       .filter(([key, value]) => {
-        if(Array.isArray(value)){
+        if (Array.isArray(value)) {
           return value.length > 0;
         }
         return !!value;
       })
       .map(([key, value]) => {
-        if(Array.isArray(value)){
-          return value.map(v => `${key}=${v}`).join('&')
+        if (Array.isArray(value)) {
+          return value.map(v => `${key}=${v}`).join("&");
         }
         return `${key}=${value}`;
       })
