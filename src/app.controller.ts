@@ -11,13 +11,13 @@ async function createBrowser() {
   return puppeteer.launch({
     headless: true,
     args: [
-      "--enable-features=NetworkService",
+      // "--enable-features=NetworkService",
       "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-accelerated-2d-canvas",
-      "--disable-gpu",
-      "--window-size=1920x1080"
+      // "--disable-setuid-sandbox",
+      // "--disable-dev-shm-usage",
+      // "--disable-accelerated-2d-canvas",
+      // "--disable-gpu",
+      // "--window-size=1920x1080"
     ]
   });
 }
@@ -34,7 +34,7 @@ async function createPage(browser: Browser) {
     height: 1080
   });
 
-  const withoutAssets = true;
+  const withoutAssets = false;
 
   if (withoutAssets) {
     const blockedResourceTypes = [
@@ -474,13 +474,22 @@ export class AppController implements OnModuleInit {
     }: any = query;
     const browserPage = await this.preparePage("getCarById", userId);
 
-    await goto(browserPage, `https://m.mobile.de/fahrzeuge/details.html?id=${id}`);
+    await goto(browserPage, `https://suchen.mobile.de/fahrzeuge/details.html?id=${id}`);
 
-    await browserPage.waitForSelector("[data-testid=\"vip-key-features-box\"]");
+    await browserPage.waitForSelector('[data-testid=\"vip-key-features-box\"]');
 
     const { $ } = await getCheerio(browserPage);
 
     const listItems = $("[data-testid^=\"vip-key-features-list-item-\"]").get();
+
+    const element = $("[data-testid=\"image-gallery\"]");
+
+    const imgElements = $(element).find(
+      "[data-testid^=\"slide-container-image-\"] img"
+    );
+    const imgUrls = imgElements
+      .map((i, imgElement) => imgElement.attribs["src"])
+      .get();
 
     const features = listItems.map(el => {
       const testId = $(el).attr("data-testid");
@@ -528,6 +537,7 @@ export class AppController implements OnModuleInit {
     });
 
     return {
+      imgUrls,
       features,
       technicalData,
       similarElements
