@@ -479,7 +479,13 @@ export class AppController implements OnModuleInit {
       {
         headers
       }
-    ).then((res) => res.data);
+    ).then((res) => res.data)
+      .then(res => ({
+        ...res,
+        price: res.price.grs.amount * this.EUR_RUB,
+        priceWithoutVAT: res.price.grs.amount * this.EUR_RUB / 1.19,
+        imgUrls: res.images.map(im => `https://${im.uri.replace("m.mobile.de/yams-proxy/", "")}?rule=mo-360.jpg`),
+      }));
   }
 
   @Get("/api/cars")
@@ -584,7 +590,7 @@ export class AppController implements OnModuleInit {
     // https://www.mobile.de/api/s/?ps=0&top&tic&psz=20&vc=Car&dam=0&con=NEW&ref=dsp&sb=rel&_filters
     const queryParamsMap = {
       dam: 0, // "false",
-      ref:"dsp", // "quickSearch",
+      ref: "dsp", // "quickSearch",
       s: "Car",
       // По какому полю сортировать
       sb: sort || "rel",
@@ -658,7 +664,7 @@ export class AppController implements OnModuleInit {
         ...r,
         items: r.items.map(i => ({
           ...i,
-          imgUrls: i.images.map(im => `https://${im.uri.replace('m.mobile.de/yams-proxy/','')}?rule=mo-360.jpg`),
+          imgUrls: i.images.map(im => `https://${im.uri.replace("m.mobile.de/yams-proxy/", "")}?rule=mo-360.jpg`),
           date: i.attr.fr,
           price: i.price.grs.amount * this.EUR_RUB,
           priceWithoutVAT: i.price.grs.amount * this.EUR_RUB / 1.19,
