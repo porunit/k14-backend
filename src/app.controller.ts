@@ -113,11 +113,11 @@ const fromTo = (from: string, to: string) => {
   }
 
   return from && to
-    ? encodeURIComponent(`${from}:${to}`)
+    ? `${from}:${to}`// encodeURIComponent(`${from}:${to}`)
     : from
-      ? encodeURIComponent(`${from}:`)
+      ? `${from}:` // encodeURIComponent(`${from}:`)
       : to
-        ? encodeURIComponent(`:${to}`)
+        ? `:${to}` // encodeURIComponent(`:${to}`)
         : "";
 };
 
@@ -326,18 +326,33 @@ export class AppController implements OnModuleInit {
       return this._brands;
     }
 
-    const page = await this.preparePage("main");
+    // const page = await this.preparePage("main");
+    //
+    // await goto(page, "https://www.mobile.de");
+    //
+    // const { $ } = await getCheerio(page);
+    //
+    // const OPTION_SELECTOR = "[data-testid=\"qs-select-make\"] option";
+    //
+    // this._brands = $(OPTION_SELECTOR)
+    //   .map((i, el) => ({ value: $(el).attr("value"), label: $(el).text() }))
+    //   .get()
+    //   .filter((r) => !!r.value);
 
-    await goto(page, "https://www.mobile.de");
 
-    const { $ } = await getCheerio(page);
+    const headers = {};
+    headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
+    headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
+    headers["x-mobile-device-type"] = "phone";
 
-    const OPTION_SELECTOR = "[data-testid=\"qs-select-make\"] option";
+    let result = await axios.get(
+      `https://www.mobile.de/api/r/makes/Car`,
+      {
+        headers
+      }
+    ).then((res) => res.data)
 
-    this._brands = $(OPTION_SELECTOR)
-      .map((i, el) => ({ value: $(el).attr("value"), label: $(el).text() }))
-      .get()
-      .filter((r) => !!r.value);
+    this._brands = result.makes.map(i => ({label: i.n, value: i.i})).sort((a, b) => a.label.localeCompare(b.label));
 
     return this._brands;
   }
@@ -440,20 +455,20 @@ export class AppController implements OnModuleInit {
     }
 
     const queryParamsMap = {
-      dam: "false",
-      ref: "quickSearch",
-      s: "Car",
+      dam: 0, // "false",
+      // ref: "quickSearch",
+      // s: "Car",
       // По какому полю сортировать
-      sb: sort || "rel",
+      // sb: sort || "rel",
       // Сортировка в какую сторону - up / down
-      od: order ? (order === "asc" ? "up" : "down") : "",
+      // od: order ? (order === "asc" ? "up" : "down") : "",
       vc: "Car",
       pw: fromTo(pwFrom, pwTo),
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: encodeURIComponent(`${brand};${model};${modelGroup};`),
+      ms: `${brand};${model};${modelGroup};`, // encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
-      isSearchRequest: "true",
-      pageNumber: page,
+      // isSearchRequest: "true",
+      // pageNumber: page,
       fr: fromTo(yearFrom, yearTo),
       // fuel-type Тип двигателя (массив)
       ft: ft ? Array.isArray(ft) ? ft : [ft] : [],
@@ -465,18 +480,56 @@ export class AppController implements OnModuleInit {
       con
     };
 
-    const browserPage = await this.preparePage("api");
+    // const browserPage = await this.preparePage("api");
+    //
+    // await goto(browserPage, "https://www.mobile.de");
 
-    await goto(browserPage, "https://www.mobile.de");
+    // const modelsResult = await browserPage.evaluate((queryParamsMap) => {
+    //   const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join("&");
+    //   return fetch(
+    //     `https://m.mobile.de/consumer/api/search/hit-count?${str}`
+    //   ).then((res) => res.json());
+    // }, queryParamsMap);
 
-    const modelsResult = await browserPage.evaluate((queryParamsMap) => {
-      const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join("&");
-      return fetch(
-        `https://m.mobile.de/consumer/api/search/hit-count?${str}`
-      ).then((res) => res.json());
-    }, queryParamsMap);
+    // https://www.mobile.de/api/s/?ps=0&psz=0&vc=Car&dam=0
 
-    return modelsResult;
+
+    const searchString = Object.entries(queryParamsMap)
+      .filter(([key, value]) => {
+        if (Array.isArray(value)) {
+          return value.length > 0;
+        }
+        return !!value;
+      })
+      .map(([key, value]) => {
+        if (Array.isArray(value)) {
+          return value.map(v => `${key}=${v}`).join("&");
+        }
+        return `${key}=${value}`;
+      })
+      .join("&");
+
+
+      // const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join("&");
+      const headers = {};
+    headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
+    headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
+    headers["x-mobile-device-type"] = "phone";
+
+    console.log(searchString)
+
+    return axios.get(
+      `https://www.mobile.de/api/s/?${searchString}`,
+      {
+        headers
+      }
+    ).then((res) => res.data)
+      .then(res => ({
+        ...res,
+        count: res.numResultsTotal,
+      }));
+
+    // return modelsResult;
   }
 
   // https://suchen.mobile.de/fahrzeuge/details.html?id=219709942
