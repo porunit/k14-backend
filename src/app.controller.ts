@@ -358,15 +358,27 @@ export class AppController implements OnModuleInit {
       return this.brandModelsMap[brand];
     }
 
-    const page = await this.preparePage("api");
+    // const page = await this.preparePage("api");
+    //
+    // await goto(page, "https://www.mobile.de");
 
-    await goto(page, "https://www.mobile.de");
+    // const modelsResult = await page.evaluate((selectedBrand) => {
+    //   return fetch(
+    //     `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand}`
+    //   ).then((res) => res.json());
+    // }, brand);
 
-    const modelsResult = await page.evaluate((selectedBrand) => {
-      return fetch(
-        `https://m.mobile.de/consumer/api/search/reference-data/models/${selectedBrand}`
-      ).then((res) => res.json());
-    }, brand);
+    const headers = {};
+    headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
+    headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
+    headers["x-mobile-device-type"] = "phone";
+
+    let result = await axios.get(
+      `https://www.mobile.de/api/r/models/${brand}`,
+      {
+        headers
+      }
+    ).then((res) => res.data)
 
     const rus = (val: any) => {
       let label = val.label || "";
@@ -381,13 +393,14 @@ export class AppController implements OnModuleInit {
       };
     };
 
-    modelsResult.data = modelsResult.data.map(i => i.items ? ({ ...i, items: i.items.map(rus) }) : rus(i));
+    result.models = result.models.map(i => rus({isGroup: Boolean(i.g), label: i.n, value: i.i}));
+    // modelsResult.data = modelsResult.data.map(i => i.items ? ({ ...i, items: i.items.map(rus) }) : rus(i));
 
-    if (modelsResult.data?.length > 0) {
-      this.brandModelsMap[brand] = modelsResult.data;
+    if (result?.length > 0) {
+      this.brandModelsMap[brand] = result.models;
     }
 
-    return modelsResult.data; // .filter((r) => !!r.value);
+    return result.models; // .filter((r) => !!r.value);
   }
 
   @Get("/api/cars/count")
