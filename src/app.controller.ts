@@ -465,7 +465,7 @@ export class AppController implements OnModuleInit {
       vc: "Car",
       pw: fromTo(pwFrom, pwTo),
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: `${brand};${model};${modelGroup};`, // encodeURIComponent(`${brand};${model};${modelGroup};`),
+      ms: (brand || model || modelGroup) ? `${brand};${model};${modelGroup};` : '', // encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       // isSearchRequest: "true",
       // pageNumber: page,
