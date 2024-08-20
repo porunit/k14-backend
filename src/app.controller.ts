@@ -456,6 +456,8 @@ export class AppController implements OnModuleInit {
 
     const queryParamsMap = {
       dam: 0, // "false",
+      ps: 0, // "false",
+      psz: 0, // "false",
       // ref: "quickSearch",
       // s: "Car",
       // По какому полю сортировать
@@ -498,6 +500,9 @@ export class AppController implements OnModuleInit {
       .filter(([key, value]) => {
         if (Array.isArray(value)) {
           return value.length > 0;
+        }
+        if(value === 0){
+          return true;
         }
         return !!value;
       })
