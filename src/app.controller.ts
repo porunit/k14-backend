@@ -227,6 +227,8 @@ async function extractTextContent(page, EUR_RUB) {
   return { items, totalCount };
 }
 
+const HOST = process.env.HOST || `${ORIGIN}/${FRONTEND_NAME}`
+
 @Controller()
 export class AppController implements OnModuleInit {
   private _browser: Browser;
@@ -258,27 +260,33 @@ export class AppController implements OnModuleInit {
 
   @Get("/")
   async getStatic(@Res() res) {
-    const response = await axios.get(`${ORIGIN}/${FRONTEND_NAME}/`, {
+    const response = await axios.get(`${HOST}/`, {
       responseType: "stream"
     });
     // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
     response.data.pipe(res);
   }
 
+  // @Get(`/:path`)
+  // async getAsset(@Param("path") path: string, @Res() res) {
+  //   const response = await axios.get(`${HOST}/${path}`, {
+  //     responseType: "stream"
+  //   });
+  //   // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
+  //   res.set("content-type", response.headers["content-type"]);
+  //   response.data.pipe(res);
+  // }
+
+
   @Get(`/:path`)
-  async getAsset(@Param("path") path: string, @Res() res) {
-    const response = await axios.get(`${ORIGIN}/${FRONTEND_NAME}/${path}`, {
-      responseType: "stream"
-    });
-    // Object.entries(response.headers).map(([key, header]) => res.set(key, header));
-    res.set("content-type", response.headers["content-type"]);
-    response.data.pipe(res);
+  redirect(@Res() res) {
+    return res.redirect('/');
   }
 
   @Get(`/assets/:path`)
   async getCSS(@Param("path") path: string, @Res() res) {
     const response = await axios.get(
-      `${ORIGIN}/${FRONTEND_NAME}/assets/${path}`,
+      `${HOST}/assets/${path}`,
       {
         responseType: "stream"
       }
