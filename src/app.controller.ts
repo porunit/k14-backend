@@ -227,7 +227,144 @@ async function extractTextContent(page, EUR_RUB) {
   return { items, totalCount };
 }
 
-const HOST = process.env.HOST || `${ORIGIN}/${FRONTEND_NAME}`
+const HOST = process.env.HOST || `${ORIGIN}/${FRONTEND_NAME}`;
+
+const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
+  "label": "Abstandswarner",
+  "value": "DISTANCE_WARNING_SYSTEM",
+  "ru": "Предупреждение о расстоянии"
+}, {
+  "label": "Adaptives Kurvenlicht",
+  "value": "ADAPTIVE_BENDING_LIGHTS",
+  "ru": "Адаптивное освещение поворотов"
+}, { "label": "Allradantrieb", "value": "FOUR_WHEEL_DRIVE", "ru": "Полный привод" }, {
+  "label": "Allwetterreifen",
+  "value": "ALL_SEASON_TIRES",
+  "ru": "Всесезонные шины"
+}, {
+  "label": "Beheizbare Frontscheibe",
+  "value": "HEATED_WINDSHIELD",
+  "ru": "Обогрев лобового стекла"
+}, {
+  "label": "Berganfahrassistent",
+  "value": "HILL_START_ASSIST",
+  "ru": "Помощник при старте в гору"
+}, {
+  "label": "Bi-Xenon Scheinwerfer",
+  "value": "BI_XENON_HEADLIGHTS",
+  "ru": "Биксеноновые фары"
+}, {
+  "label": "Blendfreies Fernlicht",
+  "value": "GLARE_FREE_HIGH_BEAM",
+  "ru": "Дальний свет без бликов"
+}, { "label": "Dachreling", "value": "ROOF_RAILS", "ru": "Рейлинги на крыше" }, {
+  "label": "Elektr. Heckklappe",
+  "value": "ELECTRIC_TAILGATE",
+  "ru": "Электрическая задняя дверь"
+}, { "label": "Elektr. Wegfahrsperre", "value": "IMMOBILIZER", "ru": "Электрический иммобилайзер" }, {
+  "label": "ESP",
+  "value": "ESP",
+  "ru": "ESP"
+}, {
+  "label": "Fernlichtassistent",
+  "value": "HIGH_BEAM_ASSIST",
+  "ru": "Ассистент дальнего света"
+}, {
+  "label": "Geschwindigkeits- begrenzungsanlage",
+  "value": "SPEED_LIMITER",
+  "ru": "Система ограничения скорости"
+}, { "label": "Kurvenlicht", "value": "BENDING_LIGHTS", "ru": "Поворотный свет" }, {
+  "label": "Laserlicht",
+  "value": "LASER_HEADLIGHTS",
+  "ru": "Лазерный свет"
+}, { "label": "LED-Scheinwerfer", "value": "LED_HEADLIGHTS", "ru": "Светодиодные фары" }, {
+  "label": "LED-Tagfahrlicht",
+  "value": "LED_RUNNING_LIGHTS",
+  "ru": "Светодиодные дневные ходовые огни"
+}, { "label": "Leichtmetallfelgen", "value": "ALLOY_WHEELS", "ru": "Литые диски" }, {
+  "label": "Lichtsensor",
+  "value": "LIGHT_SENSOR",
+  "ru": "Датчик освещенности"
+}, {
+  "label": "Luftfederung",
+  "value": "AIR_SUSPENSION",
+  "ru": "Пневматическая подвеска"
+}, {
+  "label": "Nachtsichtassistent",
+  "value": "NIGHT_VISION_ASSIST",
+  "ru": "Помощник ночного видения"
+}, {
+  "label": "Nebelscheinwerfer",
+  "value": "FRONT_FOG_LIGHTS",
+  "ru": "Противотуманные фары"
+}, {
+  "label": "Notbremsassistent",
+  "value": "COLLISION_AVOIDANCE",
+  "ru": "Ассистент экстренного торможения"
+}, { "label": "Notrad", "value": "EMERGENCY_WHEEL", "ru": "запасное колесо" }, {
+  "label": "Pannenkit",
+  "value": "REPAIR_KIT",
+  "ru": "Разборный комплект"
+}, { "label": "Panoramadach", "value": "PANORAMIC_GLASS_ROOF", "ru": "Панорамная крыша" }, {
+  "label": "Regensensor",
+  "value": "AUTOMATIC_RAIN_SENSOR",
+  "ru": "Датчик дождя"
+}, {
+  "label": "Reifendruckkontrolle",
+  "value": "TIRE_PRESSURE_MONITORING",
+  "ru": "Контроль давления в шинах"
+}, { "label": "Reserverad", "value": "SPARE_WHEEL", "ru": "Запасное колесо" }, {
+  "label": "Scheinwerferreinigung",
+  "value": "HEADLIGHT_WASHER_SYSTEM",
+  "ru": "Очистка фар"
+}, {
+  "label": "Schiebedach",
+  "value": "SUNROOF",
+  "ru": "люк на крыше"
+}, {
+  "label": "Schlüssellose Zentralverriegelung (Keyless)",
+  "value": "KEYLESS_ENTRY",
+  "ru": "Центральный замок без ключа (Keyless)"
+}, { "label": "Servolenkung", "value": "POWER_ASSISTED_STEERING", "ru": "Усилитель руля" }, {
+  "label": "Sommerreifen",
+  "value": "SUMMER_TIRES",
+  "ru": "Летние шины"
+}, {
+  "label": "Sportfahrwerk",
+  "value": "PERFORMANCE_HANDLING_SYSTEM",
+  "ru": "Спортивная подвеска"
+}, { "label": "Sportpaket", "value": "SPORT_PACKAGE", "ru": "Спортивный пакет" }, {
+  "label": "Spurhalteassistent",
+  "value": "LANE_DEPARTURE_WARNING",
+  "ru": "Помощник по поддержанию полосы движения"
+}, { "label": "Stahlfelgen", "value": "STEEL_WHEELS", "ru": "Стальные диски" }, {
+  "label": "Start/Stopp-Automatik",
+  "value": "START_STOP_SYSTEM",
+  "ru": "Автоматический старт/стоп"
+}, {
+  "label": "Tagfahrlicht",
+  "value": "DAYTIME_RUNNING_LIGHTS",
+  "ru": "Дневные ходовые огни"
+}, {
+  "label": "Totwinkelassistent",
+  "value": "BLIND_SPOT_MONITOR",
+  "ru": "Помощник по слепым зонам"
+}, {
+  "label": "Traktionskontrolle",
+  "value": "TRACTION_CONTROL_SYSTEM",
+  "ru": "Контроль тяги"
+}, {
+  "label": "Verkehrszeichenerkennung",
+  "value": "TRAFFIC_SIGN_RECOGNITION",
+  "ru": "Распознавание дорожных знаков"
+}, { "label": "Winterreifen", "value": "WINTER_TIRES", "ru": "Зимние шины" }, {
+  "label": "Xenonscheinwerfer",
+  "value": "XENON_HEADLIGHTS",
+  "ru": "Ксеноновые фары"
+}, { "label": "Zentralverriegelung", "value": "CENTRAL_LOCKING", "ru": "Центральный замок" }];
+
+const tempRuMap = tempRu.reduce((acc, curr) => ({...acc, [curr.label]: curr.ru}), {})
+const tempValueMap = tempRu.reduce((acc, curr) => ({...acc, [curr.label]: curr.value}), {})
 
 @Controller()
 export class AppController implements OnModuleInit {
@@ -280,7 +417,7 @@ export class AppController implements OnModuleInit {
 
   @Get(`/:path`)
   redirect(@Res() res) {
-    return res.redirect('/');
+    return res.redirect("/");
   }
 
   @Get(`/assets/:path`)
@@ -358,9 +495,9 @@ export class AppController implements OnModuleInit {
       {
         headers
       }
-    ).then((res) => res.data)
+    ).then((res) => res.data);
 
-    this._brands = result.makes.map(i => ({label: i.n, value: i.i})).sort((a, b) => a.label.localeCompare(b.label));
+    this._brands = result.makes.map(i => ({ label: i.n, value: i.i })).sort((a, b) => a.label.localeCompare(b.label));
 
     return this._brands;
   }
@@ -401,7 +538,7 @@ export class AppController implements OnModuleInit {
       {
         headers
       }
-    ).then((res) => res.data)
+    ).then((res) => res.data);
 
     const rus = (val: any) => {
       let label = val.label || "";
@@ -416,7 +553,7 @@ export class AppController implements OnModuleInit {
       };
     };
 
-    result.models = result.models.map(i => rus({isGroup: Boolean(i.g), label: i.n, value: i.i}));
+    result.models = result.models.map(i => rus({ isGroup: Boolean(i.g), label: i.n, value: i.i }));
     // modelsResult.data = modelsResult.data.map(i => i.items ? ({ ...i, items: i.items.map(rus) }) : rus(i));
 
     if (result?.length > 0) {
@@ -475,7 +612,7 @@ export class AppController implements OnModuleInit {
       vc: "Car",
       pw: fromTo(pwFrom, pwTo),
       p: fromTo(priceFrom, priceTo), // `%253A${priceTo}`,
-      ms: (brand || model || modelGroup) ? `${brand};${model};${modelGroup};` : '', // encodeURIComponent(`${brand};${model};${modelGroup};`),
+      ms: (brand || model || modelGroup) ? `${brand};${model};${modelGroup};` : "", // encodeURIComponent(`${brand};${model};${modelGroup};`),
       ml: fromTo(mileageFrom, mileageTo), // `%253A${mileageTo}`,
       // isSearchRequest: "true",
       // pageNumber: page,
@@ -509,7 +646,7 @@ export class AppController implements OnModuleInit {
         if (Array.isArray(value)) {
           return value.length > 0;
         }
-        if(value === 0){
+        if (value === 0) {
           return true;
         }
         return !!value;
@@ -523,13 +660,13 @@ export class AppController implements OnModuleInit {
       .join("&");
 
 
-      // const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join("&");
-      const headers = {};
+    // const str = Object.entries(queryParamsMap).map(([k, v]) => `${k}=${v}`).join("&");
+    const headers = {};
     headers["x-mobile-client"] = "de.mobile.iphone.app/11.5.1/50DBC5FB-5255-4144-BEB7-42F7DE7DCD65";
     headers["user-agent"] = "mobile.de_iPhone_de/11.5.1";
     headers["x-mobile-device-type"] = "phone";
 
-    console.log(searchString)
+    console.log(searchString);
 
     return axios.get(
       `https://www.mobile.de/api/s/?${searchString}`,
@@ -539,7 +676,7 @@ export class AppController implements OnModuleInit {
     ).then((res) => res.data)
       .then(res => ({
         ...res,
-        count: res.numResultsTotal,
+        count: res.numResultsTotal
       }));
 
     // return modelsResult;
@@ -561,9 +698,10 @@ export class AppController implements OnModuleInit {
     ).then((res) => res.data)
       .then(res => ({
         ...res,
+        features: res.features.map(f => ({label: tempRuMap[f] || f, value: tempValueMap[f] || f})),
         price: res.price.grs.amount * this.EUR_RUB,
         priceWithoutVAT: res.price.grs.amount * this.EUR_RUB / 1.19,
-        imgUrls: res.images.map(im => `https://${im.uri.replace("m.mobile.de/yams-proxy/", "")}?rule=mo-360.jpg`),
+        imgUrls: res.images.map(im => `https://${im.uri.replace("m.mobile.de/yams-proxy/", "")}?rule=mo-360.jpg`)
       }));
   }
 
