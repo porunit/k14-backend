@@ -232,11 +232,11 @@ const HOST = process.env.HOST || `${ORIGIN}/${FRONTEND_NAME}`;
 const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
   "label": "Abstandswarner",
   "value": "DISTANCE_WARNING_SYSTEM",
-  "ru": "Предупреждение о расстоянии"
+  "ru": "Система экстренного торможения"
 }, {
   "label": "Adaptives Kurvenlicht",
   "value": "ADAPTIVE_BENDING_LIGHTS",
-  "ru": "Адаптивное освещение поворотов"
+  "ru": "Адаптивный свет"
 }, { "label": "Allradantrieb", "value": "FOUR_WHEEL_DRIVE", "ru": "Полный привод" }, {
   "label": "Allwetterreifen",
   "value": "ALL_SEASON_TIRES",
@@ -248,7 +248,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, {
   "label": "Berganfahrassistent",
   "value": "HILL_START_ASSIST",
-  "ru": "Помощник при старте в гору"
+  "ru": "Система помощи при трогании на подъеме"
 }, {
   "label": "Bi-Xenon Scheinwerfer",
   "value": "BI_XENON_HEADLIGHTS",
@@ -256,12 +256,12 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, {
   "label": "Blendfreies Fernlicht",
   "value": "GLARE_FREE_HIGH_BEAM",
-  "ru": "Дальний свет без бликов"
+  "ru": "Антибликовый свет"
 }, { "label": "Dachreling", "value": "ROOF_RAILS", "ru": "Рейлинги на крыше" }, {
   "label": "Elektr. Heckklappe",
   "value": "ELECTRIC_TAILGATE",
-  "ru": "Электрическая задняя дверь"
-}, { "label": "Elektr. Wegfahrsperre", "value": "IMMOBILIZER", "ru": "Электрический иммобилайзер" }, {
+  "ru": "Электропривод двери багажника"
+}, { "label": "Elektr. Wegfahrsperre", "value": "IMMOBILIZER", "ru": "Иммобилайзер" }, {
   "label": "ESP",
   "value": "ESP",
   "ru": "ESP"
@@ -276,7 +276,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, { "label": "Kurvenlicht", "value": "BENDING_LIGHTS", "ru": "Поворотный свет" }, {
   "label": "Laserlicht",
   "value": "LASER_HEADLIGHTS",
-  "ru": "Лазерный свет"
+  "ru": "Лазерные фары"
 }, { "label": "LED-Scheinwerfer", "value": "LED_HEADLIGHTS", "ru": "Светодиодные фары" }, {
   "label": "LED-Tagfahrlicht",
   "value": "LED_RUNNING_LIGHTS",
@@ -292,7 +292,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, {
   "label": "Nachtsichtassistent",
   "value": "NIGHT_VISION_ASSIST",
-  "ru": "Помощник ночного видения"
+  "ru": "Ассистент ночного видения"
 }, {
   "label": "Nebelscheinwerfer",
   "value": "FRONT_FOG_LIGHTS",
@@ -301,7 +301,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
   "label": "Notbremsassistent",
   "value": "COLLISION_AVOIDANCE",
   "ru": "Ассистент экстренного торможения"
-}, { "label": "Notrad", "value": "EMERGENCY_WHEEL", "ru": "запасное колесо" }, {
+}, { "label": "Notrad", "value": "EMERGENCY_WHEEL", "ru": "Запасное колесо" }, {
   "label": "Pannenkit",
   "value": "REPAIR_KIT",
   "ru": "Разборный комплект"
@@ -320,7 +320,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, {
   "label": "Schiebedach",
   "value": "SUNROOF",
-  "ru": "люк на крыше"
+  "ru": "Люк на крыше"
 }, {
   "label": "Schlüssellose Zentralverriegelung (Keyless)",
   "value": "KEYLESS_ENTRY",
@@ -361,10 +361,146 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
   "label": "Xenonscheinwerfer",
   "value": "XENON_HEADLIGHTS",
   "ru": "Ксеноновые фары"
-}, { "label": "Zentralverriegelung", "value": "CENTRAL_LOCKING", "ru": "Центральный замок" }];
+}, { "label": "Zentralverriegelung", "value": "CENTRAL_LOCKING", "ru": "Центральный замок" }, {
+  "label": "Tempomat",
+  "value": "CRUISE_CONTROL",
+  "ru": "Круиз-контроль"
+}, {
+  "label": "Abstandstempomat",
+  "value": "ADAPTIVE_CRUISE_CONTROL",
+  "ru": "Дистанционный круиз-контроль"
+}, { "label": "Alarmanlage", "value": "ALARM_SYSTEM", "ru": "Система сигнализации" }, {
+  "label": "Ambiente-Beleuchtung",
+  "value": "AMBIENT_LIGHTING",
+  "ru": "Окружающее освещение"
+}, { "label": "Android Auto", "value": "ANDROID_AUTO", "ru": "Андроид Авто" }, {
+  "label": "Apple CarPlay",
+  "value": "CARPLAY",
+  "ru": "Apple CarPlay"
+}, { "label": "Armlehne", "value": "ARM_REST", "ru": "подлокотник" }, {
+  "label": "Beheizbares Lenkrad",
+  "value": "HEATED_STEERING_WHEEL",
+  "ru": "Руль с подогревом"
+}, {
+  "label": "Behindertengerecht",
+  "value": "DISABLED_ACCESSIBLE",
+  "ru": "Доступно для людей с ограниченными возможностями"
+}, { "label": "Bluetooth", "value": "BLUETOOTH", "ru": "Bluetooth" }, {
+  "label": "Bordcomputer",
+  "value": "ON_BOARD_COMPUTER",
+  "ru": "Бортовой компьютер"
+}, { "label": "CD-Spieler", "value": "CD_PLAYER", "ru": "CD-плеер" }, {
+  "label": "Elektr. Fensterheber",
+  "value": "ELECTRIC_WINDOWS",
+  "ru": "Электрические стеклоподъемники"
+}, {
+  "label": "Elektr. Seitenspiegel",
+  "value": "ELECTRIC_EXTERIOR_MIRRORS",
+  "ru": "Электрическое боковое зеркало"
+}, {
+  "label": "Elektr. Sitzeinstellung",
+  "value": "ELECTRIC_ADJUSTABLE_SEATS",
+  "ru": "Электрическая регулировка сиденья"
+}, {
+  "label": "Elektr. Sitzeinstellung, hinten",
+  "value": "ELECTRIC_BACKSEAT_ADJUSTMENT",
+  "ru": "Электрическая регулировка сиденья сзади"
+}, {
+  "label": "Freisprecheinrichtung",
+  "value": "HANDS_FREE_PHONE_SYSTEM",
+  "ru": "Громкая связь"
+}, {
+  "label": "Gepäckraumabtrennung",
+  "value": "CARGO_BARRIER",
+  "ru": "Перегородка багажного отделения"
+}, {
+  "label": "Head-Up Display",
+  "value": "HEAD_UP_DISPLAY",
+  "ru": "Проекционный дисплей"
+}, {
+  "label": "Induktionsladen für Smartphones",
+  "value": "WIRELESS_CHARGING",
+  "ru": "Индукционная зарядка для смартфонов"
+}, {
+  "label": "Innenspiegel autom. abblendend",
+  "value": "DIMMING_INTERIOR_MIRROR",
+  "ru": "Авто салонное зеркало затемнение"
+}, { "label": "Isofix", "value": "ISOFIX", "ru": "Изофикс" }, {
+  "label": "Isofix Beifahrersitz",
+  "value": "PASSENGER_SEAT_ISOFIX_POINT",
+  "ru": "Пассажирское сиденье изофикс"
+}, { "label": "Lederlenkrad", "value": "LEATHER_STEERING_WHEEL", "ru": "Кожаный руль" }, {
+  "label": "Lordosenstütze",
+  "value": "LUMBAR_SUPPORT",
+  "ru": "Поясничная поддержка"
+}, { "label": "Massagesitze", "value": "MASSAGE_SEATS", "ru": "Массажные сиденья" }, {
+  "label": "Müdigkeitswarner",
+  "value": "FATIGUE_WARNING_SYSTEM",
+  "ru": "Предупреждение об усталости"
+}, {
+  "label": "Multifunktionslenkrad",
+  "value": "MULTIFUNCTIONAL_WHEEL",
+  "ru": "Многофункциональное рулевое колесо"
+}, {
+  "label": "Musikstreaming integriert",
+  "value": "INTEGRATED_MUSIC_STREAMING",
+  "ru": "Интегрированная потоковая передача музыки"
+}, {
+  "label": "Navigationssystem",
+  "value": "NAVIGATION_SYSTEM",
+  "ru": "Навигационная система"
+}, {
+  "label": "Notrufsystem",
+  "value": "EMERGENCY_CALL_SYSTEM",
+  "ru": "Система экстренного вызова"
+}, { "label": "Radio DAB", "value": "DAB_RADIO", "ru": "Радио DAB" }, {
+  "label": "Raucherpaket",
+  "value": "SMOKERS_PACKAGE",
+  "ru": "Пакет для курящих"
+}, {
+  "label": "Schaltwippen",
+  "value": "PADDLE_SHIFTERS",
+  "ru": "Подрулевые переключатели"
+}, { "label": "Sitzbelüftung", "value": "VENTILATED_SEATS", "ru": "Вентиляция сиденья" }, {
+  "label": "Sitzheizung",
+  "value": "ELECTRIC_HEATED_SEATS",
+  "ru": "Подогрев сидений"
+}, {
+  "label": "Sitzheizung hinten",
+  "value": "ELECTRIC_HEATED_REAR_SEATS",
+  "ru": "Подогрев задних сидений"
+}, { "label": "Skisack", "value": "SKI_BAG", "ru": "Лыжная сумка" }, {
+  "label": "Soundsystem",
+  "value": "SOUND_SYSTEM",
+  "ru": "Звуковая система"
+}, { "label": "Sportsitze", "value": "SPORT_SEATS", "ru": "Спортивные сиденья" }, {
+  "label": "Sprachsteuerung",
+  "value": "VOICE_CONTROL",
+  "ru": "Голосовое управление"
+}, {
+  "label": "Standheizung",
+  "value": "AUXILIARY_HEATING",
+  "ru": "Дополнительный отопитель"
+}, { "label": "Touchscreen", "value": "TOUCHSCREEN", "ru": "Сенсорный экран" }, {
+  "label": "Tuner / Radio",
+  "value": "TUNER",
+  "ru": "Тюнер/радио"
+}, { "label": "TV", "value": "TV", "ru": "ТВ" }, {
+  "label": "Umklappbarer Beifahrersitz",
+  "value": "FOLD_FLAT_PASSENGER_SEAT",
+  "ru": "Складное пассажирское сиденье"
+}, { "label": "USB", "value": "USB", "ru": "USB" }, {
+  "label": "Volldigitales Kombiinstrument",
+  "value": "DIGITAL_COCKPIT",
+  "ru": "Полностью цифровая комбинация приборов"
+}, { "label": "Winterpaket", "value": "WINTER_PACKAGE", "ru": "Зимний пакет" }, {
+  "label": "WLAN / Wifi Hotspot",
+  "value": "WIFI_HOTSPOT",
+  "ru": "Точка доступа WLAN / Wi-Fi"
+}];
 
-const tempRuMap = tempRu.reduce((acc, curr) => ({...acc, [curr.label]: curr.ru}), {})
-const tempValueMap = tempRu.reduce((acc, curr) => ({...acc, [curr.label]: curr.value}), {})
+const tempRuMap = tempRu.reduce((acc, curr) => ({ ...acc, [curr.label]: curr.ru }), {});
+const tempValueMap = tempRu.reduce((acc, curr) => ({ ...acc, [curr.label]: curr.value }), {});
 
 @Controller()
 export class AppController implements OnModuleInit {
@@ -698,7 +834,7 @@ export class AppController implements OnModuleInit {
     ).then((res) => res.data)
       .then(res => ({
         ...res,
-        features: res.features.map(f => ({label: tempRuMap[f] || f, value: tempValueMap[f] || f})),
+        features: res.features.map(f => ({ label: tempRuMap[f] || f, value: tempValueMap[f] || f })),
         price: res.price.grs.amount * this.EUR_RUB,
         priceWithoutVAT: res.price.grs.amount * this.EUR_RUB / 1.19,
         imgUrls: res.images.map(im => `https://${im.uri.replace("m.mobile.de/yams-proxy/", "")}?rule=mo-360.jpg`)
