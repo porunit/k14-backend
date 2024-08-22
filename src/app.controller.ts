@@ -229,7 +229,7 @@ async function extractTextContent(page, EUR_RUB) {
 
 const HOST = process.env.HOST || `${ORIGIN}/${FRONTEND_NAME}`;
 
-const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
+const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "Антиблокировочная система (ABS)" }, {
   "label": "Abstandswarner",
   "value": "DISTANCE_WARNING_SYSTEM",
   "ru": "Система экстренного торможения"
@@ -264,7 +264,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
 }, { "label": "Elektr. Wegfahrsperre", "value": "IMMOBILIZER", "ru": "Иммобилайзер" }, {
   "label": "ESP",
   "value": "ESP",
-  "ru": "ESP"
+  "ru": "Система стабилизации (ESP)"
 }, {
   "label": "Fernlichtassistent",
   "value": "HIGH_BEAM_ASSIST",
@@ -357,7 +357,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
   "label": "Verkehrszeichenerkennung",
   "value": "TRAFFIC_SIGN_RECOGNITION",
   "ru": "Распознавание дорожных знаков"
-}, { "label": "Winterreifen", "value": "WINTER_TIRES", "ru": "Зимние шины" }, {
+}, { "label": "Nichtraucher-Fahrzeug", "value": "Nichtraucher-Fahrzeug", "ru": "Автомобиль для некурящих" }, { "label": "Schlüssellose Zentralverriegelung", "value": "Schlüssellose Zentralverriegelung", "ru": "Центральный замок без ключа" }, { "label": "Garantie", "value": "Garantie", "ru": "Гарантия" }, { "label": "Anhängerkupplung fest", "value": "Anhängerkupplung fest", "ru": "Фиксированное прицепное устройство" }, { "label": "Winterreifen", "value": "WINTER_TIRES", "ru": "Зимние шины" }, {
   "label": "Xenonscheinwerfer",
   "value": "XENON_HEADLIGHTS",
   "ru": "Ксеноновые фары"
@@ -377,7 +377,7 @@ const tempRu = [{ "label": "ABS", "value": "ABS", "ru": "АБС" }, {
   "label": "Apple CarPlay",
   "value": "CARPLAY",
   "ru": "Apple CarPlay"
-}, { "label": "Armlehne", "value": "ARM_REST", "ru": "подлокотник" }, {
+}, { "label": "Armlehne", "value": "ARM_REST", "ru": "Подлокотник" }, {
   "label": "Beheizbares Lenkrad",
   "value": "HEATED_STEERING_WHEEL",
   "ru": "Руль с подогревом"
