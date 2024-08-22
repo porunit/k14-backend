@@ -761,6 +761,11 @@ export class AppController implements OnModuleInit {
       .get();
   }
 
+  @Get('/api/features')
+  async getFeatures() {
+    return tempRu;
+  }
+
   @Get('/api/brands')
   async getBrands() {
     if (this._brands) {
