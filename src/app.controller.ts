@@ -267,12 +267,12 @@ const tempRu = [
   {
     label: 'Beheizbare Frontscheibe',
     value: 'HEATED_WINDSHIELD',
-    ru: 'Обогрев лобового стекла',
+    ru: 'Электрообогрев лобового стекла',
   },
   {
     label: 'Berganfahrassistent',
     value: 'HILL_START_ASSIST',
-    ru: 'Система помощи при трогании на подъеме',
+    ru: 'Система помощи при старте в гору (HSA)',
   },
   {
     label: 'Bi-Xenon Scheinwerfer',
@@ -288,7 +288,7 @@ const tempRu = [
   {
     label: 'Elektr. Heckklappe',
     value: 'ELECTRIC_TAILGATE',
-    ru: 'Электропривод двери багажника',
+    ru: 'Электропривод крышки багажника',
   },
   { label: 'Elektr. Wegfahrsperre', value: 'IMMOBILIZER', ru: 'Иммобилайзер' },
   {
@@ -404,13 +404,13 @@ const tempRu = [
   {
     label: 'Spurhalteassistent',
     value: 'LANE_DEPARTURE_WARNING',
-    ru: 'Помощник по поддержанию полосы движения',
+    ru: 'Система удержания в полосе',
   },
   { label: 'Stahlfelgen', value: 'STEEL_WHEELS', ru: 'Стальные диски' },
   {
     label: 'Start/Stopp-Automatik',
     value: 'START_STOP_SYSTEM',
-    ru: 'Автоматический старт/стоп',
+    ru: 'Система «старт-стоп»',
   },
   {
     label: 'Tagfahrlicht',
@@ -420,7 +420,7 @@ const tempRu = [
   {
     label: 'Totwinkelassistent',
     value: 'BLIND_SPOT_MONITOR',
-    ru: 'Помощник по слепым зонам',
+    ru: 'Система контроля слепых зон',
   },
   {
     label: 'Traktionskontrolle',
@@ -502,7 +502,7 @@ const tempRu = [
   {
     label: 'Elektr. Fensterheber',
     value: 'ELECTRIC_WINDOWS',
-    ru: 'Электрические стеклоподъемники',
+    ru: 'Электростеклоподъемники',
   },
   {
     label: 'Elektr. Seitenspiegel',
