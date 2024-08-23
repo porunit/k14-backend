@@ -512,7 +512,7 @@ const tempRu = [
   {
     label: 'Elektr. Sitzeinstellung',
     value: 'ELECTRIC_ADJUSTABLE_SEATS',
-    ru: 'Электрорегулировка сиденья',
+    ru: 'Электрорегулировка передних сидений',
   },
   {
     label: 'Elektr. Sitzeinstellung, hinten',
