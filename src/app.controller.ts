@@ -256,7 +256,7 @@ const tempRu = [
   {
     label: 'Adaptives Kurvenlicht',
     value: 'ADAPTIVE_BENDING_LIGHTS',
-    ru: 'Адаптивный свет',
+    ru: 'Адаптивное освещение',
   },
   { label: 'Allradantrieb', value: 'FOUR_WHEEL_DRIVE', ru: 'Полный привод' },
   {
@@ -299,7 +299,7 @@ const tempRu = [
   {
     label: 'Fernlichtassistent',
     value: 'HIGH_BEAM_ASSIST',
-    ru: 'Ассистент дальнего света',
+    ru: 'Автоматический дальний свет',
   },
   {
     label: 'Geschwindigkeits- begrenzungsanlage',
@@ -326,17 +326,17 @@ const tempRu = [
   {
     label: 'Lichtsensor',
     value: 'LIGHT_SENSOR',
-    ru: 'Датчик освещенности',
+    ru: 'Датчик света',
   },
   {
     label: 'Luftfederung',
     value: 'AIR_SUSPENSION',
-    ru: 'Пневматическая подвеска',
+    ru: 'Пневмоподвеска',
   },
   {
     label: 'Nachtsichtassistent',
     value: 'NIGHT_VISION_ASSIST',
-    ru: 'Ассистент ночного видения',
+    ru: 'Система ночного видения',
   },
   {
     label: 'Nebelscheinwerfer',
@@ -367,23 +367,23 @@ const tempRu = [
   {
     label: 'Reifendruckkontrolle',
     value: 'TIRE_PRESSURE_MONITORING',
-    ru: 'Контроль давления в шинах',
+    ru: 'Датчик давления в шинах',
   },
   { label: 'Reserverad', value: 'SPARE_WHEEL', ru: 'Запасное колесо' },
   {
     label: 'Scheinwerferreinigung',
     value: 'HEADLIGHT_WASHER_SYSTEM',
-    ru: 'Очистка фар',
+    ru: 'Омыватель фар',
   },
   {
     label: 'Schiebedach',
     value: 'SUNROOF',
-    ru: 'Люк на крыше',
+    ru: 'Люк',
   },
   {
     label: 'Schlüssellose Zentralverriegelung (Keyless)',
     value: 'KEYLESS_ENTRY',
-    ru: 'Центральный замок без ключа (Keyless)',
+    ru: 'Система доступа без ключа',
   },
   {
     label: 'Servolenkung',
@@ -430,7 +430,7 @@ const tempRu = [
   {
     label: 'Verkehrszeichenerkennung',
     value: 'TRAFFIC_SIGN_RECOGNITION',
-    ru: 'Распознавание дорожных знаков',
+    ru: 'Система распознавания дорожных знаков',
   },
   {
     label: 'Nichtraucher-Fahrzeug',
@@ -446,7 +446,7 @@ const tempRu = [
   {
     label: 'Anhängerkupplung fest',
     value: 'Anhängerkupplung fest',
-    ru: 'Фиксированное прицепное устройство',
+    ru: 'Фаркоп',
   },
   { label: 'Winterreifen', value: 'WINTER_TIRES', ru: 'Зимние шины' },
   {
@@ -475,17 +475,17 @@ const tempRu = [
     value: 'AMBIENT_LIGHTING',
     ru: 'Окружающее освещение',
   },
-  { label: 'Android Auto', value: 'ANDROID_AUTO', ru: 'Андроид Авто' },
+  { label: 'Android Auto', value: 'ANDROID_AUTO', ru: 'Android Auto' },
   {
     label: 'Apple CarPlay',
     value: 'CARPLAY',
-    ru: 'Apple CarPlay',
+    ru: 'CarPlay',
   },
-  { label: 'Armlehne', value: 'ARM_REST', ru: 'Подлокотник' },
+  { label: 'Armlehne', value: 'ARM_REST', ru: 'Передний центральный подлокотник' },
   {
     label: 'Beheizbares Lenkrad',
     value: 'HEATED_STEERING_WHEEL',
-    ru: 'Руль с подогревом',
+    ru: 'Обогрев рулевого колеса',
   },
   {
     label: 'Behindertengerecht',
@@ -507,17 +507,17 @@ const tempRu = [
   {
     label: 'Elektr. Seitenspiegel',
     value: 'ELECTRIC_EXTERIOR_MIRRORS',
-    ru: 'Электрическое боковое зеркало',
+    ru: 'Электропривод зеркал',
   },
   {
     label: 'Elektr. Sitzeinstellung',
     value: 'ELECTRIC_ADJUSTABLE_SEATS',
-    ru: 'Электрическая регулировка сиденья',
+    ru: 'Электрорегулировка сиденья',
   },
   {
     label: 'Elektr. Sitzeinstellung, hinten',
     value: 'ELECTRIC_BACKSEAT_ADJUSTMENT',
-    ru: 'Электрическая регулировка сиденья сзади',
+    ru: 'Электрорегулировка задних сидений',
   },
   {
     label: 'Freisprecheinrichtung',
@@ -553,7 +553,7 @@ const tempRu = [
   {
     label: 'Lederlenkrad',
     value: 'LEATHER_STEERING_WHEEL',
-    ru: 'Кожаный руль',
+    ru: 'Отделка кожей рулевого колеса',
   },
   {
     label: 'Lordosenstütze',
@@ -564,7 +564,7 @@ const tempRu = [
   {
     label: 'Müdigkeitswarner',
     value: 'FATIGUE_WARNING_SYSTEM',
-    ru: 'Предупреждение об усталости',
+    ru: 'Датчик усталости водителя',
   },
   {
     label: 'Multifunktionslenkrad',
@@ -605,7 +605,7 @@ const tempRu = [
   {
     label: 'Sitzheizung',
     value: 'ELECTRIC_HEATED_SEATS',
-    ru: 'Подогрев сидений',
+    ru: 'Подогрев передних сидений',
   },
   {
     label: 'Sitzheizung hinten',
@@ -639,7 +639,7 @@ const tempRu = [
   {
     label: 'Umklappbarer Beifahrersitz',
     value: 'FOLD_FLAT_PASSENGER_SEAT',
-    ru: 'Складное пассажирское сиденье',
+    ru: 'Складывающееся заднее сиденье',
   },
   { label: 'USB', value: 'USB', ru: 'USB' },
   {
